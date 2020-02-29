@@ -103,4 +103,5 @@ result.append(np.dot(result[-1], weigth_matrices[-1]))
 with np.printoptions(precision=3, suppress=True):
     print("Expected output:\n", y)
     print("Output After Training:\n", result[-1])
+    print("Error:\n", error_function(y, result[-1]))
 # %%
