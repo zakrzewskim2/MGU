@@ -43,10 +43,10 @@ if layer_lengths.shape[0] != num_layers:
 
 #%%
 np.random.seed(1)
-weigth_matrices = []
+weight_matrices = []
 for i in range(0, num_layers-1):
     # Initial weights from [-1,1], with first row as bias
-    weigth_matrices.append(2*np.random.random((layer_lengths[i] + 1, layer_lengths[i+1])) - 1)
+    weight_matrices.append(2*np.random.random((layer_lengths[i] + 1, layer_lengths[i+1])) - 1)
 
 # number of iterations
 num_iterations = 100000
@@ -62,8 +62,8 @@ for j in range(num_iterations):
     outputs = []
     outputs.append(np.hstack((np.ones((X.shape[0], 1)), X)))
     for i in range(0, num_layers-2):
-        outputs.append(np.hstack((np.ones((X.shape[0], 1)), activation(np.dot(outputs[i], weigth_matrices[i])))))
-    outputs.append(np.dot(outputs[-1], weigth_matrices[-1]))
+        outputs.append(np.hstack((np.ones((X.shape[0], 1)), activation(np.dot(outputs[i], weight_matrices[i])))))
+    outputs.append(np.dot(outputs[-1], weight_matrices[-1]))
 
     # error term for each layer
     # errors[0] - error for last layer
@@ -75,7 +75,7 @@ for j in range(num_iterations):
         error_function(out_activation(outputs[-1]), y, True))
     for i in range(0, num_layers-2):
         errors.append(activation(outputs[-i-2][:, 1:], True) * \
-            np.dot(errors[i], weigth_matrices[-i-1].T[:, 1:]))
+            np.dot(errors[i], weight_matrices[-i-1].T[:, 1:]))
 
     # gradient for each matrix of weights
     # gradient[0] - gradient with respect to weights between input layer and first hidden layer
@@ -88,7 +88,7 @@ for j in range(num_iterations):
 
     # Adjusting weights
     for i in range(0, num_layers-1):
-        weigth_matrices[i] += -alpha * gradients[i]
+        weight_matrices[i] += -alpha * gradients[i]
     
     if j % 1000 == 0:
         print("Error:", error_function(y, outputs[-1]))
@@ -97,8 +97,8 @@ for j in range(num_iterations):
 result = []
 result.append(np.hstack((np.ones((X_test.shape[0], 1)), X_test)))
 for i in range(0, num_layers-2):
-    result.append(np.hstack((np.ones((X_test.shape[0], 1)), activation(np.dot(result[i], weigth_matrices[i])))))
-result.append(np.dot(result[-1], weigth_matrices[-1]))
+    result.append(np.hstack((np.ones((X_test.shape[0], 1)), activation(np.dot(result[i], weight_matrices[i])))))
+result.append(np.dot(result[-1], weight_matrices[-1]))
 
 with np.printoptions(precision=3, suppress=True):
     print("Expected output:\n", y_test.T)
