@@ -1,36 +1,9 @@
 #%%
-import params
-from params import ActivationFunction
-def softmax(x):
-    denominators = np.sum(np.exp(x), axis=1)
-    return np.exp(x) / denominators[:, None]
-def softmax_derivative(x):
-    denominators = np.sum(np.exp(x), axis=1)
-    non_diagonal = np.exp(x)
-    return 0
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
-def sigmoid_derivative(x):
-    return x * (1 - x) #sigmoid(x) * (1 - sigmoid(x))
-def activation(x, type, derivative=False):
-    if derivative:
-        zeros = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
-        if type == ActivationFunction.SOFTMAX:
-            return softmax_derivative(x)
-        zeros[0] = {
-            ActivationFunction.SIGMOID: sigmoid_derivative(x),
-            ActivationFunction.TANH: 1 / (np.cosh(2 * x) + 1),
-            ActivationFunction.LINEAR: 1
-        }.get(type, 1)
-        return zeros
+def activation(x, derivative=False):
+    if (derivative == True):
+        return x * (1 - x)
     else:
-        return {
-            ActivationFunction.SIGMOID: sigmoid(x),
-            ActivationFunction.TANH: 0.5 * (np.tanh(x)+1),
-            ActivationFunction.SOFTMAX: softmax(x),
-            ActivationFunction.LINEAR: x
-        }.get(type, x)
-
+        return 1 / (1 + np.exp(-x))
 
 def error_function(y, y_exp, derivative = False):
     if (derivative == True):
@@ -39,7 +12,10 @@ def error_function(y, y_exp, derivative = False):
         return ((y - y_exp)**2).mean()
 
 def out_activation(x, derivative=False):
-    return activation(x, ActivationFunction.LINEAR, derivative)
+    if (derivative == True):
+        return 1 
+    else:
+        return x 
 #%%
 import numpy as np
 import pandas as pd
@@ -51,9 +27,9 @@ y_train = train["cls"]
 X_test = np.array(test.iloc[:,:-1])
 y_test = np.array([test["cls"]]).T
 # inputs - each row is an input to MLP
-X = np.array(X_train)#[0:4,:]
+X = np.array(X_train)
 # outputs - each row is an expected output for the corresponding input
-y = np.array([y_train]).T#[0:4,:]
+y = np.array([y_train]).T
 # N - number of input vectors
 N = X.shape[0]
 
@@ -86,7 +62,7 @@ for j in range(num_iterations):
     outputs = []
     outputs.append(np.hstack((np.ones((X.shape[0], 1)), X)))
     for i in range(0, num_layers-2):
-        outputs.append(np.hstack((np.ones((X.shape[0], 1)), activation(np.dot(outputs[i], weight_matrices[i]), ActivationFunction.SIGMOID))))
+        outputs.append(np.hstack((np.ones((X.shape[0], 1)), activation(np.dot(outputs[i], weight_matrices[i])))))
     outputs.append(np.dot(outputs[-1], weight_matrices[-1]))
 
     # error term for each layer
@@ -98,8 +74,8 @@ for j in range(num_iterations):
     errors.append(out_activation(outputs[-1], True) * \
         error_function(out_activation(outputs[-1]), y, True))
     for i in range(0, num_layers-2):
-        errors.append(activation(outputs[-i-2][:, 1:], ActivationFunction.SIGMOID, True) * \
-            np.sum(np.dot(errors[i], weight_matrices[-i-1].T[:, 1:]), axis=0))
+        errors.append(activation(outputs[-i-2][:, 1:], True) * \
+            np.dot(errors[i], weight_matrices[-i-1].T[:, 1:]))
 
     # gradient for each matrix of weights
     # gradient[0] - gradient with respect to weights between input layer and first hidden layer
@@ -108,7 +84,7 @@ for j in range(num_iterations):
     # gradient[-1] - gradient with respect to weights between last hidden layer and output layer
     gradients = []
     for i in range(0, num_layers-1):
-        gradients.append(np.sum(np.transpose(np.dot(outputs[i].T, errors[-i-1]),(1,0,2)), axis=0)/N)
+        gradients.append(np.dot(outputs[i].T, errors[-i-1]) / N)
 
     # Adjusting weights
     for i in range(0, num_layers-1):
@@ -121,7 +97,7 @@ for j in range(num_iterations):
 result = []
 result.append(np.hstack((np.ones((X_test.shape[0], 1)), X_test)))
 for i in range(0, num_layers-2):
-    result.append(np.hstack((np.ones((X_test.shape[0], 1)), activation(np.dot(result[i], weight_matrices[i]), ActivationFunction.SIGMOID))))
+    result.append(np.hstack((np.ones((X_test.shape[0], 1)), activation(np.dot(result[i], weight_matrices[i])))))
 result.append(np.dot(result[-1], weight_matrices[-1]))
 
 with np.printoptions(precision=3, suppress=True):
