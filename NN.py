@@ -27,9 +27,9 @@ y_train = train["cls"]
 X_test = np.array(test.iloc[:,:-1])
 y_test = np.array([test["cls"]]).T
 # inputs - each row is an input to MLP
-X = np.array(X_data)
+X = np.array(X_train)
 # outputs - each row is an expected output for the corresponding input
-y = np.array([y_data]).T
+y = np.array([y_train]).T
 # N - number of input vectors
 N = X.shape[0]
 
