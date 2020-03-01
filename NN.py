@@ -75,31 +75,50 @@ if visualize:
             G.add_node(node, pos=(4 * (i + 1), 2 * index + 2))
         node_num += len(new_nodes)
 
-    # Init visualization edges
-    for i in range(num_layers - 1):
-        # bias edges
-        for in_node in range(layer_lengths[i + 1]):
-            G.add_edge(0, vis_mappings[i + 1][in_node],
-                weight = round(weigth_matrices[i][0, in_node], 2))
-
-        # next layer edges
-        for out_node in range(1, layer_lengths[i] + 1):
+    def draw_graph(G, with_colorbar = False):
+        # Init visualization edges
+        for i in range(num_layers - 1):
+            # bias edges
             for in_node in range(layer_lengths[i + 1]):
-                G.add_edge(vis_mappings[i][out_node - 1], vis_mappings[i + 1][in_node],
-                    weight = round(weigth_matrices[i][out_node, in_node], 2))
+                G.add_edge(0, vis_mappings[i + 1][in_node],
+                    weight = round(weigth_matrices[i][0, in_node], 2))
 
-    # draw graph
-    pos = nx.get_node_attributes(G, 'pos')
-    nx.draw_networkx(G, pos)
-    # nx.draw(G, pos)
+            # next layer edges
+            for out_node in range(1, layer_lengths[i] + 1):
+                for in_node in range(layer_lengths[i + 1]):
+                    G.add_edge(vis_mappings[i][out_node - 1], vis_mappings[i + 1][in_node],
+                        weight = round(weigth_matrices[i][out_node, in_node], 2))
 
-    for edge in G.edges(data='weight'):
-        nx.draw_networkx_edges(G, pos, edgelist=[edge], width=5*edge[2])
+        # draw graph
+        pos = nx.get_node_attributes(G, 'pos')
+        weights = nx.get_edge_attributes(G, 'weight')
+        # nx.draw_networkx(G, pos)
+        # nx.draw(G, pos)
 
-    labels = nx.get_edge_attributes(G, 'weight')
-    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+        nodes = G.nodes()
+        colors = []
+        weights = nx.get_edge_attributes(G, 'weight')
+        for node in G.nodes():
+            if node > layer_lengths[0]:
+                colors.append(weights[(0, node)])
+            else:
+                colors.append(0)
 
-    plt.pause(0.05)
+        nc = nx.draw_networkx_nodes(G, pos, nodelist=nodes, node_color=colors, 
+            with_labels=True, node_size=100, cmap=plt.cm.viridis)
+        
+        if with_colorbar:
+            plt.colorbar(nc)
+        
+        for edge in G.edges(data='weight'):
+            nx.draw_networkx_edges(G, pos, edgelist=[edge], width=abs(edge[2]), edge_color = 'r' if edge[2] > 0 else 'b')
+
+        # labels = nx.get_edge_attributes(G, 'weight')
+        # nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+
+        plt.pause(0.05)
+    
+    draw_graph(G, with_colorbar = True)
 
 # number of iterations
 num_iterations = 100000
@@ -147,31 +166,8 @@ for j in range(num_iterations):
     if j % 1000 == 0:
         print("Error:", error_function(y, outputs[-1]))
 
-    if visualize and j % 100 == 0:
-        # Init visualization edges
-        for i in range(num_layers - 1):
-            # bias edges
-            for in_node in range(layer_lengths[i + 1]):
-                G.add_edge(0, vis_mappings[i + 1][in_node],
-                    weight = round(weigth_matrices[i][0, in_node], 2))
-
-            # next layer edges
-            for out_node in range(1, layer_lengths[i] + 1):
-                for in_node in range(layer_lengths[i + 1]):
-                    G.add_edge(vis_mappings[i][out_node - 1], vis_mappings[i + 1][in_node],
-                        weight = round(weigth_matrices[i][out_node, in_node], 2))
-
-        # draw graph
-        pos = nx.get_node_attributes(G, 'pos')
-        nx.draw_networkx(G, pos)
-
-        for edge in G.edges(data='weight'):
-            nx.draw_networkx_edges(G, pos, edgelist=[edge], width=5*edge[2])
-
-        labels = nx.get_edge_attributes(G, 'weight')
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-
-        plt.pause(0.05)
+    if visualize and j % 1000 == 0:
+        draw_graph(G)
 
 if visualize:
     plt.show()
