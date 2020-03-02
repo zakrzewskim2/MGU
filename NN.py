@@ -14,15 +14,17 @@ def sigmoid_derivative(x):
     return x * (1 - x) #sigmoid(x) * (1 - sigmoid(x))
 def activation(x, type, derivative=False):
     if derivative:
-        zeros = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
+        diag_3d = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
+        np.einsum('iji->ji', diag_3d)[...] = np.ones((x.shape[0], x.shape[1]))
+
         if type == ActivationFunction.SOFTMAX:
             return softmax_derivative(x)
-        zeros[0] = {
-            ActivationFunction.SIGMOID: sigmoid_derivative(x),
-            ActivationFunction.TANH: 1 / (np.cosh(2 * x) + 1),
-            ActivationFunction.LINEAR: 1
-        }.get(type, 1)
-        return zeros
+        return {
+            ActivationFunction.SIGMOID: diag_3d*sigmoid_derivative(x)[None,:,:],
+            ActivationFunction.TANH: diag_3d*(1 / (np.cosh(2 * x) + 1)),
+            ActivationFunction.LINEAR: diag_3d
+        }.get(type, diag_3d)
+
     else:
         return {
             ActivationFunction.SIGMOID: sigmoid(x),
