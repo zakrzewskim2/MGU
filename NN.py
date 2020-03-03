@@ -5,20 +5,26 @@ def softmax(x):
     denominators = np.sum(np.exp(x), axis=1)
     return np.exp(x) / denominators[:, None]
 def softmax_derivative(x):
-    denominators = np.sum(np.exp(x), axis=1)
-    non_diagonal = np.exp(x)
-    return 0
+    diag_3d = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
+    np.einsum('iji->ji', diag_3d)[...] = np.ones((x.shape[0], x.shape[1]))
+    diag_3d = diag_3d * (softmax(x)*(1-softmax(x)))
+    some_2d_matrix = softmax(x)[:,:,None]
+    we_are_getting_there_matrix = np.transpose(some_2d_matrix, (0,2,1))
+    almost_done_matrix = -we_are_getting_there_matrix*some_2d_matrix
+    so_close_matrix = np.transpose(almost_done_matrix, (1,0,2))
+    np.einsum('iji->ji', so_close_matrix)[...] = np.zeros((x.shape[0], x.shape[1]))
+    result = so_close_matrix+diag_3d
+    return result
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 def sigmoid_derivative(x):
     return x * (1 - x) #sigmoid(x) * (1 - sigmoid(x))
-def activation(x, type, derivative=False):
+def activation_function(x, type, derivative=False):
     if derivative:
-        diag_3d = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
-        np.einsum('iji->ji', diag_3d)[...] = np.ones((x.shape[0], x.shape[1]))
-
         if type == ActivationFunction.SOFTMAX:
             return softmax_derivative(x)
+        diag_3d = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
+        np.einsum('iji->ji', diag_3d)[...] = np.ones((x.shape[0], x.shape[1]))
         return {
             ActivationFunction.SIGMOID: diag_3d*sigmoid_derivative(x)[None,:,:],
             ActivationFunction.TANH: diag_3d*(1 / (np.cosh(2 * x) + 1)),
@@ -33,15 +39,17 @@ def activation(x, type, derivative=False):
             ActivationFunction.LINEAR: x
         }.get(type, x)
 
-
 def error_function(y, y_exp, derivative = False):
     if (derivative == True):
-        return 2 * (y - y_exp) / y_exp.shape[1]
+        return (2 * (y - y_exp) / y_exp.shape[1])
     else:
         return ((y - y_exp)**2).mean()
 
+def activation(x, derivative=False):
+    return activation_function(x,ActivationFunction.TANH, derivative)
+
 def out_activation(x, derivative=False):
-    return activation(x, ActivationFunction.LINEAR, derivative)
+    return activation_function(x, ActivationFunction.LINEAR, derivative)
 #%%
 import numpy as np
 import pandas as pd
@@ -56,6 +64,17 @@ y_test = np.array([test["cls"]]).T
 X = np.array(X_train)#[0:4,:]
 # outputs - each row is an expected output for the corresponding input
 y = np.array([y_train]).T#[0:4,:]
+# yy = np.zeros((100,2))
+# yy.T[0] = y.T[0]
+# yy.T[1] = y.T[0]
+# for i in range(100):
+#     if yy[i][0]==1:
+#         yy[i][0]=1
+#         yy[i][1]=0
+#     else:
+#         yy[i][0]=0
+#         yy[i][1]=1
+# y = yy
 # N - number of input vectors
 N = X.shape[0]
 
@@ -75,7 +94,7 @@ for i in range(0, num_layers-1):
     weight_matrices.append(2*np.random.random((layer_lengths[i] + 1, layer_lengths[i+1])) - 1)
 
 # number of iterations
-num_iterations = 100000
+num_iterations = 10000
 # learning rate
 alpha = 0.1
 
@@ -88,7 +107,7 @@ for j in range(num_iterations):
     outputs = []
     outputs.append(np.hstack((np.ones((X.shape[0], 1)), X)))
     for i in range(0, num_layers-2):
-        outputs.append(np.hstack((np.ones((X.shape[0], 1)), activation(np.dot(outputs[i], weight_matrices[i]), ActivationFunction.SIGMOID))))
+        outputs.append(np.hstack((np.ones((X.shape[0], 1)), activation(np.dot(outputs[i], weight_matrices[i])))))
     outputs.append(np.dot(outputs[-1], weight_matrices[-1]))
 
     # error term for each layer
@@ -98,9 +117,9 @@ for j in range(num_iterations):
     # errors[-1] - error for first hidden layer
     errors = []
     errors.append(out_activation(outputs[-1], True) * \
-        error_function(out_activation(outputs[-1]), y, True))
+        error_function(out_activation(outputs[-1]), out_activation(y), True))
     for i in range(0, num_layers-2):
-        errors.append(activation(outputs[-i-2][:, 1:], ActivationFunction.SIGMOID, True) * \
+        errors.append(activation(outputs[-i-2][:, 1:], True) * \
             np.sum(np.dot(errors[i], weight_matrices[-i-1].T[:, 1:]), axis=0))
 
     # gradient for each matrix of weights
@@ -123,7 +142,7 @@ for j in range(num_iterations):
 result = []
 result.append(np.hstack((np.ones((X_test.shape[0], 1)), X_test)))
 for i in range(0, num_layers-2):
-    result.append(np.hstack((np.ones((X_test.shape[0], 1)), activation(np.dot(result[i], weight_matrices[i]), ActivationFunction.SIGMOID))))
+    result.append(np.hstack((np.ones((X_test.shape[0], 1)), activation(np.dot(result[i], weight_matrices[i])))))
 result.append(np.dot(result[-1], weight_matrices[-1]))
 
 with np.printoptions(precision=3, suppress=True):
