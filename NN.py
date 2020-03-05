@@ -64,7 +64,7 @@ def max_error(y, y_exp, derivative):
     else:
         return np.max(np.abs(y - y_exp), axis=1).mean()
 
-def corss_entropy(y, y_exp, derivative):
+def cross_entropy(y, y_exp, derivative):
     if derivative:
         return -y_exp/y
     else:
@@ -77,7 +77,7 @@ def out_activation(x, derivative=False):
     return activation_function(x, ActivationFunction.SOFTMAX, derivative)
 
 def error_function(y, y_exp, derivative=False):
-    return corss_entropy(y, y_exp, derivative)
+    return cross_entropy(y, y_exp, derivative)
 #%%
 import numpy as np
 import pandas as pd
