@@ -5,12 +5,12 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 
-training_data = joblib.load('training_data.joblib')
+training_info = joblib.load('training_info.joblib')
 
-weight_history = training_data['weight_history']
-layer_lengths = training_data['layer_lengths']
+weight_history = training_info['weight_history']
+layer_lengths = training_info['layer_lengths']
 num_layers = len(layer_lengths)
-config = training_data['config']
+config = training_info['config']
 
 
 G = nx.Graph()

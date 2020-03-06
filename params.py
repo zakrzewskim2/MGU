@@ -8,8 +8,9 @@ class ProblemType(Enum):
     REGRESSION = 2
 
 class Config():
-    activation_function = activation_functions.softmax
-    error_function = error_functions.cross_entropy
+    def __init__(self):
+        self.activation_function = activation_functions.softmax
+        self.error_function = error_functions.cross_entropy
 
     hidden_layers = [5, 5, 3]
     bias = True
