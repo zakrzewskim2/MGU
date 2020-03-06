@@ -14,13 +14,15 @@ X_train, y_train = train.iloc[:, :-1], train["cls"]
 X_test, y_test = np.array(test.iloc[:, :-1]), np.array([test["cls"]]).T
 
 # inputs - each row is an input to MLP
-s = 100
-X = np.array(X_train)[0:s, :]
+X = X_train.values
 
 # outputs - each row is an expected output for the corresponding input
-y = np.array([y_train]).T[0:s, :]
-y = np.concatenate([y-1, -y+2], axis=1)
-y_test = np.concatenate([y_test-1, -y_test+2], axis=1)
+def one_hot_encode(y, min_class, max_class):
+    return np.identity(max_class - min_class + 1)[y - min_class, :]
+
+y = y_train.values
+y = one_hot_encode(y, min_class = 1, max_class = 2)
+y_test = one_hot_encode(y_test, min_class = 1, max_class = 2)
 
 # N - number of input vectors
 N = X.shape[0]
@@ -136,4 +138,5 @@ with np.printoptions(precision=3, suppress=True):
     print("Expected output:\n", y_test.T)
     print("Output After Training:\n", out_activation(result[-1]))
     print("Error:\n", error_function(out_activation(result[-1]), y_test))
+
 # %%
