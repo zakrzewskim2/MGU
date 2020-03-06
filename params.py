@@ -1,17 +1,17 @@
 from enum import Enum
+import activation_functions
+import error_functions
+
 
 class ProblemType(Enum):
     CLASSIFICATION = 1
     REGRESSION = 2
 
-class ActivationFunction(Enum):
-    SIGMOID = 1
-    TANH = 2
-    LINEAR = 3
-    SOFTMAX = 4
+
+activation_function = activation_functions.softmax
+error_function = error_functions.cross_entropy
 
 hidden_layers = [5, 5, 3]
-activation_function = ActivationFunction.SIGMOID
 bias = True
 batch_size = 0.3
 num_iterations = 100000

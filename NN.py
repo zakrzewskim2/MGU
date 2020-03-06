@@ -1,83 +1,9 @@
 #%%
 import params
-from params import ActivationFunction
-def delta(y, y_exp):
-    result = np.zeros(y.shape)
-    result[np.where(y_exp<y)]=1
-    result[np.where(y_exp>y)]=-1
-    return result
-def softmax(x):
-    denominators = np.sum(np.exp(x), axis=1)
-    return np.exp(x) / denominators[:, None]
-def softmax_derivative(x):
-    diag_3d = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
-    np.einsum('iji->ji', diag_3d)[...] = np.ones((x.shape[0], x.shape[1]))
-    diag_3d = diag_3d * (softmax(x)*(1-softmax(x)))
-    some_2d_matrix = softmax(x)[:,:,None]
-    we_are_getting_there_matrix = np.transpose(some_2d_matrix, (0,2,1))
-    almost_done_matrix = -we_are_getting_there_matrix*some_2d_matrix
-    so_close_matrix = np.transpose(almost_done_matrix, (1,0,2))
-    np.einsum('iji->ji', so_close_matrix)[...] = np.zeros((x.shape[0], x.shape[1]))
-    result = so_close_matrix+diag_3d
-    return result
-def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
-def sigmoid_derivative(x):
-    return sigmoid(x) * (1 - sigmoid(x)) 
-def activation_function(x, f_type, derivative=False):
-    if derivative:
-        if f_type == ActivationFunction.SOFTMAX:
-            return softmax_derivative(x)
-        diag_3d = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
-        np.einsum('iji->ji', diag_3d)[...] = np.ones((x.shape[0], x.shape[1]))
-        return {
-            ActivationFunction.SIGMOID: diag_3d*sigmoid_derivative(x)[None,:,:],
-            ActivationFunction.TANH: diag_3d*(1 / (np.cosh(2 * x) + 1)),
-            ActivationFunction.LINEAR: diag_3d
-        }.get(f_type, diag_3d)
-    else:
-        return {
-            ActivationFunction.SIGMOID: sigmoid(x),
-            ActivationFunction.TANH: 0.5 * (np.tanh(x)+1),
-            ActivationFunction.SOFTMAX: softmax(x),
-            ActivationFunction.LINEAR: x
-        }.get(f_type, x)
-#%%
-def mean_squared(y, y_exp, derivative):
-    if derivative:
-        return (2 * (y - y_exp) / y_exp.shape[1])
-    else:
-        return ((y - y_exp)**2).mean()
+activation = params.activation_function
+out_activation = params.activation_function
+error_function = params.error_function
 
-def mean(y, y_exp, derivative):
-    if derivative:
-        return delta(y, y_exp)
-    else: 
-        return np.abs(y - y_exp).mean()
-
-def max_error(y, y_exp, derivative):
-    if derivative:
-        result = np.zeros(y.shape)
-        indexes = np.where((np.max(np.abs(y - y_exp), axis=1)==np.abs(y - y_exp).T).T)
-        result[indexes] = 2*(y[indexes]>y_exp[indexes])-1
-        return result
-    else:
-        return np.max(np.abs(y - y_exp), axis=1).mean()
-
-def cross_entropy(y, y_exp, derivative):
-    if derivative:
-        return -y_exp/y
-    else:
-        return np.sum(-y_exp*np.log(y))
-#%%
-def activation(x, derivative=False):
-    return activation_function(x,ActivationFunction.SOFTMAX, derivative)
-
-def out_activation(x, derivative=False):
-    return activation_function(x, ActivationFunction.SOFTMAX, derivative)
-
-def error_function(y, y_exp, derivative=False):
-    return cross_entropy(y, y_exp, derivative)
 #%%
 import numpy as np
 import pandas as pd
@@ -111,7 +37,7 @@ if layer_lengths.shape[0] != num_layers:
 import matplotlib.pyplot as plt
 import networkx as nx
 
-visualize = True
+visualize = False
 G = nx.Graph()
 
 np.random.seed(1)
