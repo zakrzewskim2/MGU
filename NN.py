@@ -1,6 +1,11 @@
 #%%
 import params
 from params import ActivationFunction
+def delta(y, y_exp):
+    result = np.zeros(y.shape)
+    result[np.where(y_exp<y)]=1
+    result[np.where(y_exp>y)]=-1
+    return result
 def softmax(x):
     denominators = np.sum(np.exp(x), axis=1)
     return np.exp(x) / denominators[:, None]
@@ -19,9 +24,9 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 def sigmoid_derivative(x):
     return sigmoid(x) * (1 - sigmoid(x)) 
-def activation_function(x, type, derivative=False):
+def activation_function(x, f_type, derivative=False):
     if derivative:
-        if type == ActivationFunction.SOFTMAX:
+        if f_type == ActivationFunction.SOFTMAX:
             return softmax_derivative(x)
         diag_3d = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
         np.einsum('iji->ji', diag_3d)[...] = np.ones((x.shape[0], x.shape[1]))
@@ -29,27 +34,50 @@ def activation_function(x, type, derivative=False):
             ActivationFunction.SIGMOID: diag_3d*sigmoid_derivative(x)[None,:,:],
             ActivationFunction.TANH: diag_3d*(1 / (np.cosh(2 * x) + 1)),
             ActivationFunction.LINEAR: diag_3d
-        }.get(type, diag_3d)
+        }.get(f_type, diag_3d)
     else:
         return {
             ActivationFunction.SIGMOID: sigmoid(x),
             ActivationFunction.TANH: 0.5 * (np.tanh(x)+1),
             ActivationFunction.SOFTMAX: softmax(x),
             ActivationFunction.LINEAR: x
-        }.get(type, x)
+        }.get(f_type, x)
+#%%
+def mean_squared(y, y_exp, derivative):
+    if derivative:
+        return (2 * (y - y_exp) / y_exp.shape[1])
+    else:
+        return ((y - y_exp)**2).mean()
 
+def mean(y, y_exp, derivative):
+    if derivative:
+        return delta(y, y_exp)
+    else: 
+        return np.abs(y - y_exp).mean()
+
+def max_error(y, y_exp, derivative):
+    if derivative:
+        result = np.zeros(y.shape)
+        indexes = np.where((np.max(np.abs(y - y_exp), axis=1)==np.abs(y - y_exp).T).T)
+        result[indexes] = 2*(y[indexes]>y_exp[indexes])-1
+        return result
+    else:
+        return np.max(np.abs(y - y_exp), axis=1).mean()
+
+def cross_entropy(y, y_exp, derivative):
+    if derivative:
+        return -y_exp/y
+    else:
+        return np.sum(-y_exp*np.log(y))
 #%%
 def activation(x, derivative=False):
     return activation_function(x,ActivationFunction.SOFTMAX, derivative)
 
 def out_activation(x, derivative=False):
-    return activation_function(x, ActivationFunction.LINEAR, derivative)
+    return activation_function(x, ActivationFunction.SOFTMAX, derivative)
 
-def error_function(y, y_exp, derivative = False):
-    if (derivative == True):
-        return (2 * (y - y_exp) / y_exp.shape[1])
-    else:
-        return ((y - y_exp)**2).mean()
+def error_function(y, y_exp, derivative=False):
+    return cross_entropy(y, y_exp, derivative)
 #%%
 import numpy as np
 import pandas as pd
@@ -66,15 +94,16 @@ s = 100
 X = np.array(X_train)[0:s,:]
 # outputs - each row is an expected output for the corresponding input
 y = np.array([y_train]).T[0:s,:]
-
+y = np.concatenate([y-1,-y+2], axis=1)
+y_test = np.concatenate([y_test-1,-y_test+2], axis=1)
 # N - number of input vectors
 N = X.shape[0]
 
 # number of layers (all of them!)
-num_layers = 5
+num_layers = 3
 
 # number of nodes in each layer
-layer_lengths = np.array([X.shape[1], 5, 5, 3, y.shape[1]])
+layer_lengths = np.array([X.shape[1], 4, y.shape[1]])
 if layer_lengths.shape[0] != num_layers:
     print("Error! Number of layers undefined!")
 
@@ -154,9 +183,11 @@ if visualize:
     draw_graph(G, with_colorbar = True)
 
 # number of iterations
-num_iterations = 25000
+num_iterations = 50000
 # learning rate
 alpha = 0.1
+
+k=100
 
 for j in range(num_iterations):
     # output of each layer
@@ -201,9 +232,10 @@ for j in range(num_iterations):
         weight_matrices[i] += -alpha * gradients[i]
 
     if j % 1000 == 0:
-        print("Error:", error_function(y, out_activation(outputs[-1])))
+        print("Error:", error_function(out_activation(outputs[-1]), y))
 
-    if visualize and j % 1000 == 0:
+    if visualize and j % k == 0:
+        k+=100
         draw_graph(G)
 
 if visualize:
@@ -218,6 +250,6 @@ result.append(np.dot(result[-1], weight_matrices[-1]))
 
 with np.printoptions(precision=3, suppress=True):
     print("Expected output:\n", y_test.T)
-    print("Output After Training:\n", out_activation(result[-1]).T)
-    print("Error:\n", error_function(y_test, out_activation(result[-1])))
+    print("Output After Training:\n", out_activation(result[-1]))
+    print("Error:\n", error_function(out_activation(result[-1]), y_test))
 # %%
