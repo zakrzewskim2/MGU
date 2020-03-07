@@ -7,7 +7,7 @@ from params import Config
 config = Config()
 
 activation = config.activation_function
-out_activation = config.activation_function
+out_activation = config.out_activation_function
 error_function = config.error_function
 
 # %%
@@ -142,7 +142,7 @@ joblib.dump(training_data, 'training_data.joblib')
 
 # %%
 result = []
-result.append(append_ones_column(X_test))
+result.append(append_ones_column(X_test.values))
 for i in range(0, num_layers-2):
     activated_result = layer_output(result[i], weight_matrices[i],
                                     activate=True)
@@ -213,12 +213,12 @@ class BackpropagationNeuralNetwork():
             print("Error:\n", self.error_function(y_predicted, y))
 
     def __serialize_training_info(self):
-        training_info = {
+        training_data = {
             'weight_history': self.weight_history,
             'config': self.config,
             'layer_lengths': self.layer_lengths
         }
-        joblib.dump(training_data, 'training_info.joblib')
+        joblib.dump(training_data, 'training_data.joblib')
 
     def __initialize_structures(self, X, y):
         # N - number of input vectors

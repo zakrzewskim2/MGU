@@ -10,6 +10,7 @@ class ProblemType(Enum):
 class Config():
     def __init__(self):
         self.activation_function = activation_functions.softmax
+        self.out_activation_function = activation_functions.softmax
         self.error_function = error_functions.cross_entropy
 
     hidden_layers = [5, 5, 3]

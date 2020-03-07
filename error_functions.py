@@ -24,7 +24,7 @@ def mean(y_predicted, y, derivative=False):
 
 def max_error(y_predicted, y, derivative=False):
     if derivative:
-        indices = np.where(np.max(np.abs(a - b), axis=1) == np.abs(a - b).T)
+        indices = np.where(np.max(np.abs(y_predicted - y), axis=1) == np.abs(y_predicted - y).T)
         result = np.where(indices,
                           2 * (y_predicted[indices] >
                                y[indices]) - 1,  # to get -1/1

@@ -5,7 +5,7 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 
-training_info = joblib.load('training_info.joblib')
+training_info = joblib.load('training_data.joblib')
 
 weight_history = training_info['weight_history']
 layer_lengths = training_info['layer_lengths']
@@ -85,7 +85,8 @@ for weight_matrices in weight_history[1:]:
     if i % plot_iteration_interval == 0:
         plt.clf()
         draw_graph(G, weight_matrices, with_colorbar=True)
-
+    if i==500:
+        break
 plt.show()
 
 
