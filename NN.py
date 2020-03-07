@@ -61,7 +61,7 @@ class BackpropagationNeuralNetwork():
         self.__initialize_structures(X, y)
         self.__initialize_weights(random_seed)
 
-        self.previous_weights_change = self.__deep_zeros_like_copy()
+        self.previous_weights_diff = self.__deep_zeros_like_copy()
 
         if save_result:
             self.weight_history = [self.__current_weights_deep_copy()]
@@ -227,9 +227,9 @@ class BackpropagationNeuralNetwork():
         # Adjusting weights
         for i in range(self.num_layers - 1):
             delta_w = self.alpha * self.gradients[i] + \
-                self.config.moment * self.previous_weights_change[i]
+                self.config.moment * self.previous_weights_diff[i]
             self.weight_matrices[i] += -delta_w
-            self.previous_weights_change[i] = delta_w
+            self.previous_weights_diff[i] = delta_w
             
 
 
