@@ -1,11 +1,6 @@
 from enum import Enum
-import activation_functions
-import error_functions
-
-
-class ProblemType(Enum):
-    CLASSIFICATION = 1
-    REGRESSION = 2
+import mlp.activation_functions as activation_functions
+import mlp.error_functions as error_functions
 
 class Config():
     def __init__(self):
@@ -19,4 +14,3 @@ class Config():
     num_iterations = 100000
     eta = 0.1
     moment = 0.9
-    problem_type = ProblemType.CLASSIFICATION
