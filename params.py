@@ -15,8 +15,8 @@ class Config():
 
     hidden_layers = [5, 5, 3]
     bias = True
-    batch_size = 0.3
+    batch_portion = 0.4
     num_iterations = 100000
     eta = 0.1
-    moment = 0.1
+    moment = 0.9
     problem_type = ProblemType.CLASSIFICATION
