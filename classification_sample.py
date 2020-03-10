@@ -18,7 +18,7 @@ plt.scatter(X_test.x, X_test.y, c = y_test)
 from mlp.mlp_classifier import MLPClassifier
 
 clf = MLPClassifier()
-clf.fit(X_train, y_train).score(X_test, y_test)
+clf.fit(X_train, y_train, serialize_path='training_data.joblib').score(X_test, y_test)
 
 # %%
 train_errors = clf.error_by_iteration(X_train.values, y_train.values)

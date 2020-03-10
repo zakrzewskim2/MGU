@@ -18,8 +18,8 @@ G = nx.Graph()
 # Init visualization nodes
 vis_mappings = []
 
-# Bias node
-G.add_node(0, pos=(4, 0))
+# # # Bias node
+# G.add_node(0, pos=(4, 0))
 node_num = 1
 
 for i in range(num_layers):
@@ -31,6 +31,9 @@ for i in range(num_layers):
 
 
 def draw_graph(G, weight_matrices, with_colorbar=False):
+    # Add temporary bias node
+    G.add_node(0, pos=(4, 0))
+
     # Init visualization edges
     for i in range(num_layers - 1):
         # Bias edges
@@ -55,9 +58,15 @@ def draw_graph(G, weight_matrices, with_colorbar=False):
     weights = nx.get_edge_attributes(G, 'weight')
     for node in G.nodes():
         if node > layer_lengths[0]:
-            colors.append(weights[(0, node)])
+            colors.append(weights[(node, 0)])
+        elif node == 0:
+            # Skip temporary bias
+            continue
         else:
             colors.append(0)
+
+    # Remove temporary bias node
+    G.remove_node(0)
 
     nc = nx.draw_networkx_nodes(G, pos, nodelist=nodes, node_color=colors,
                                 with_labels=True, node_size=100, cmap=plt.cm.viridis)
@@ -85,8 +94,6 @@ for weight_matrices in weight_history[1:]:
     if i % plot_iteration_interval == 0:
         plt.clf()
         draw_graph(G, weight_matrices, with_colorbar=True)
-    if i==500:
-        break
 plt.show()
 
 
