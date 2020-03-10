@@ -14,7 +14,7 @@ class BackpropagationNeuralNetwork():
         self.activation = self.config.activation_function
         self.out_activation = self.config.out_activation_function
 
-    def fit(self, X, y, random_seed=12369666):
+    def fit(self, X, y, random_seed=12369666, serialize_path=None):
         self.__initialize_structures(X, y)
         self.__initialize_weights(random_seed)
 
@@ -38,7 +38,8 @@ class BackpropagationNeuralNetwork():
 
             self.weight_history.append(self.__current_weights_deep_copy())
 
-        self.__serialize_training_info()
+        if serialize_path is not None:
+            self.__serialize_training_info(serialize_path)
 
     def predict(self, X):
         result = []
@@ -60,14 +61,24 @@ class BackpropagationNeuralNetwork():
             print("Output After Training:\n", y_predicted)
             print("Error:\n", self.error_function(y_predicted, y))
 
-    def __serialize_training_info(self):
+    def error_by_iteration(self, X, y):
+        iteration_errors = []
+        for weights in self.weight_history:
+            outputs, _ = \
+                self.__calculate_outputs_with_weights(X, weights)
+            iteration_errors.append(\
+                self.error_function(self.out_activation(outputs[-1]), y)\
+            )
+        return iteration_errors
+
+    def __serialize_training_info(self, serialize_path):
         print('Serializing result...')
         training_data = {
             'weight_history': self.weight_history,
             'config': self.config,
             'layer_lengths': self.layer_lengths
         }
-        joblib.dump(training_data, 'training_data.joblib')
+        joblib.dump(training_data, serialize_path)
 
     def __initialize_structures(self, X, y):
         # N - number of input vectors
@@ -117,28 +128,35 @@ class BackpropagationNeuralNetwork():
         return [np.array(np.zeros_like(x)) for x in self.weight_matrices]
 
     def __calculate_outputs(self, X):
+        self.outputs, self.not_activated_outputs = \
+            self.__calculate_outputs_with_weights(X, self.weight_matrices)
+
+    def __calculate_outputs_with_weights(self, X, weights):
         # output of each layer
         # outputs[0] - inputs with ones in first column (input for bias)
         # outputs[1] - output of first hidden layer, with ones in first column
         # ...
         # outputs[-1] - output of last layer (without ones)
-        self.outputs = []
-        self.not_activated_outputs = []
+        outputs = []
+        not_activated_outputs = []
 
-        self.outputs.append(self.__append_bias_input_column(X))
-        self.not_activated_outputs.append(self.outputs[0])
+        outputs.append(self.__append_bias_input_column(X))
+        not_activated_outputs.append(outputs[0])
 
         for i in range(self.num_layers - 2):
-            activated_output = self.__layer_i_train_output(i)
-            not_activated_output = self.__layer_i_train_output(
-                i, activate=False)
-            self.outputs.append(activated_output)
-            self.not_activated_outputs.append(not_activated_output)
+            activated_output = self.__layer_output(outputs[i], weights[i], \
+                activate=True)
+            not_activated_output = self.__layer_output(outputs[i], weights[i], \
+                activate=False)
+            outputs.append(activated_output)
+            not_activated_outputs.append(not_activated_output)
 
-        self.outputs.append(
-            np.dot(self.outputs[-1], self.weight_matrices[-1])
+        outputs.append(
+            np.dot(outputs[-1], weights[-1])
         )
-        self.not_activated_outputs.append(self.outputs[-1])
+        not_activated_outputs.append(outputs[-1])
+        
+        return outputs, not_activated_outputs
 
     def __calculate_errors(self, X, y):
         # error term for each layer
@@ -147,21 +165,27 @@ class BackpropagationNeuralNetwork():
         # ...
         # errors[-1] - error for first hidden layer
 
-        self.errors = []
+        self.errors = self.__calculate_errors_with_outputs(X, y, self.weight_matrices,\
+            self.outputs, self.not_activated_outputs)
+
+    def __calculate_errors_with_outputs(self, X, y, weights, outputs, not_activated_outputs):
+        errors = []
         err = (
-            np.transpose(self.error_function(self.out_activation(self.outputs[-1]), y, True)[None, :, :], (0, 2, 1)) *
+            np.transpose(self.error_function(self.out_activation(outputs[-1]), y, True)[None, :, :], (0, 2, 1)) *
             np.transpose(self.out_activation(
-                self.outputs[-1], True), (0, 2, 1))
+                outputs[-1], True), (0, 2, 1))
         ).sum(axis=1)
-        self.errors.append(err.T)
+        errors.append(err.T)
 
         for i in range(0, self.num_layers - 2):
-            self.errors.append(
-                (np.dot(self.weight_matrices[-i-1][1:, :], self.errors[i].T)[None, :, :] *
+            errors.append(
+                (np.dot(weights[-i-1][1:, :], errors[i].T)[None, :, :] *
                  np.transpose(self.activation(
-                     self.not_activated_outputs[-i-2][:, 1:], True), (0, 2, 1))
+                     not_activated_outputs[-i-2][:, 1:], True), (0, 2, 1))
                  ).sum(axis=1).T
             )
+
+        return errors
 
     def __calculate_gradients(self):
         # gradient for each matrix of weights
