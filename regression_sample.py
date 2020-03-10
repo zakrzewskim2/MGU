@@ -6,11 +6,6 @@ test = pd.read_csv("data/regression/data.cube.test.100.csv")
 X_train, y_train = train.iloc[:, :-1], train.y
 X_test, y_test = test.iloc[:, :-1], test.y
 
-from sklearn.preprocessing import StandardScaler
-sc = StandardScaler()
-X_train = sc.fit_transform(X_train)
-X_test = sc.transform(X_test)
-
 # %%
 from mlp.mlp_regressor import MLPRegressor
 
