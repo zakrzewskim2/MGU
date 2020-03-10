@@ -7,6 +7,14 @@ X_train, y_train = train.iloc[:, :-1], train.cls
 X_test, y_test = test.iloc[:, :-1], test.cls
 
 # %%
+import matplotlib.pyplot as plt
+plt.scatter(X_train.x, X_train.y, c = y_train)
+
+# %%
+import matplotlib.pyplot as plt
+plt.scatter(X_test.x, X_test.y, c = y_test)
+
+# %%
 from mlp.mlp_classifier import MLPClassifier
 
 clf = MLPClassifier()
@@ -21,6 +29,7 @@ import matplotlib.pyplot as plt
 plt.yscale('log')
 plt.plot(train_errors)
 plt.plot(test_errors)
+plt.show()
 
 # %%
 from mlp.mlp_classifier import MLPClassifier

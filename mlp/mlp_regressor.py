@@ -13,7 +13,7 @@ class MLPRegressor(BackpropagationNeuralNetwork):
             hidden_layers = [5, 5, 3], bias = True, batch_portion = 0.5, \
             num_iterations = 100000, eta = 0.1, moment = 0):
         config = Config()
-        config.out_activation_function = activation_functions.linear
+        config.out_activation_function = activation_functions.tanh
 
         config.activation_function = activation_function
         config.error_function = error_function

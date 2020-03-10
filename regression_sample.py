@@ -7,6 +7,14 @@ X_train, y_train = train.iloc[:, :-1], train.y
 X_test, y_test = test.iloc[:, :-1], test.y
 
 # %%
+import matplotlib.pyplot as plt
+plt.scatter(X_train, y_train)
+
+# %%
+import matplotlib.pyplot as plt
+plt.scatter(X_test, y_test)
+
+# %%
 from mlp.mlp_regressor import MLPRegressor
 
 estimator = MLPRegressor()
