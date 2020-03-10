@@ -26,7 +26,7 @@ class MLPClassifier(BackpropagationNeuralNetwork):
 
         super().__init__(config)
 
-    def fit(self, X, y, save_result=False, random_seed=12369666):
+    def fit(self, X, y, random_seed=12369666):
         # X is 2D - np.ndarray / pd.DataFrame
         X = self.__check_if_X_is_valid(X)
 
@@ -38,7 +38,7 @@ class MLPClassifier(BackpropagationNeuralNetwork):
         encoded_y = self.__one_hot_encode(y, min_class=self.min_class, \
             max_class=self.max_class)
         
-        super().fit(X, encoded_y, save_result=save_result, random_seed=random_seed)
+        super().fit(X, encoded_y, random_seed=random_seed)
         return self
 
     def predict(self, X):
@@ -53,7 +53,7 @@ class MLPClassifier(BackpropagationNeuralNetwork):
 
         predicted_y = self.predict(X)
         return np.mean(y == predicted_y)
-
+        
     def __one_hot_encode(self, y, min_class, max_class):
         return np.identity(max_class - min_class + 1)[y - min_class, :]
 

@@ -8,12 +8,12 @@ import numpy as np
 import pandas as pd
 
 class MLPRegressor(BackpropagationNeuralNetwork):
-    def __init__(self, activation_function = activation_functions.linear, \
+    def __init__(self, activation_function = activation_functions.softmax, \
             error_function = error_functions.mean_squared, \
             hidden_layers = [5, 5, 3], bias = True, batch_portion = 0.5, \
             num_iterations = 100000, eta = 0.1, moment = 0):
         config = Config()
-        config.out_activation_function = activation_functions.softmax
+        config.out_activation_function = activation_functions.linear
 
         config.activation_function = activation_function
         config.error_function = error_function
@@ -26,7 +26,7 @@ class MLPRegressor(BackpropagationNeuralNetwork):
 
         super().__init__(config)
 
-    def fit(self, X, y, save_result=False, random_seed=12369666):
+    def fit(self, X, y, random_seed=12369666):
         # X is 2D - np.ndarray / pd.DataFrame
         X = self.__check_if_X_is_valid(X)
 
@@ -34,7 +34,7 @@ class MLPRegressor(BackpropagationNeuralNetwork):
         y = self.__check_if_y_is_valid(y)
 
         y = y.reshape(-1, 1)        
-        super().fit(X, y, save_result=save_result, random_seed=random_seed)
+        super().fit(X, y, random_seed=random_seed)
         return self
 
     def predict(self, X):
@@ -54,7 +54,6 @@ class MLPRegressor(BackpropagationNeuralNetwork):
             return np.sqrt(np.sum((predicted_y - y)**2) / n)
 
         return standard_error_of_the_estimate(predicted_y, y)
-    
 
     def __check_if_X_is_valid(self, X):
         if type(X) == pd.DataFrame:

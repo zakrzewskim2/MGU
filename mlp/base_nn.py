@@ -12,16 +12,14 @@ class BackpropagationNeuralNetwork():
 
         self.error_function = self.config.error_function
         self.activation = self.config.activation_function
-        self.out_activation = self.config.activation_function
+        self.out_activation = self.config.out_activation_function
 
-    def fit(self, X, y, save_result=False, random_seed=12369666):
+    def fit(self, X, y, random_seed=12369666):
         self.__initialize_structures(X, y)
         self.__initialize_weights(random_seed)
 
         self.previous_weights_diff = self.__deep_zeros_like_copy()
-
-        if save_result:
-            self.weight_history = [self.__current_weights_deep_copy()]
+        self.weight_history = [self.__current_weights_deep_copy()]
 
         batch_size = int(self.config.batch_portion * self.N)
 
@@ -38,11 +36,9 @@ class BackpropagationNeuralNetwork():
                 print("Error:",
                       self.error_function(self.out_activation(self.outputs[-1]), batch_y))
 
-            if save_result:
-                self.weight_history.append(self.__current_weights_deep_copy())
+            self.weight_history.append(self.__current_weights_deep_copy())
 
-        if save_result:
-            self.__serialize_training_info()
+        self.__serialize_training_info()
 
     def predict(self, X):
         result = []
@@ -65,6 +61,7 @@ class BackpropagationNeuralNetwork():
             print("Error:\n", self.error_function(y_predicted, y))
 
     def __serialize_training_info(self):
+        print('Serializing result...')
         training_data = {
             'weight_history': self.weight_history,
             'config': self.config,
