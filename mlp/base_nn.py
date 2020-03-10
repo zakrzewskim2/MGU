@@ -1,51 +1,8 @@
-# %%
-import joblib
-import pandas as pd
+from .params import Config
+
 import numpy as np
-from params import Config
-
-config = Config()
-
-activation = config.activation_function
-out_activation = config.out_activation_function
-error_function = config.error_function
-
-# %%
-train = pd.read_csv("data\classification\data.simple.train.100.csv")
-test = pd.read_csv("data\classification\data.simple.test.100.csv")
-X_train, y_train = train.iloc[:, :-1], train["cls"]
-X_test, y_test = test.iloc[:, :-1], test["cls"]
-
-# inputs - each row is an input to MLP
-X = X_train.values
-
-# N - number of input vectors
-N = X.shape[0]
-
-def one_hot_encode(y, min_class, max_class):
-    return np.identity(max_class - min_class + 1)[y - min_class, :]
-
-
-def one_hot_decode(encoded_y, min_class):
-    return np.argmax(encoded_y, axis=1) + min_class
-
-
-# outputs - each row is an expected output for the corresponding input
-y = y_train.values
-y = one_hot_encode(y, min_class=np.min(y),
-                   max_class=np.max(y))
-y_test = one_hot_encode(y_test, min_class=np.min(y_test.values),
-                        max_class=np.max(y_test.values))
-
-# number of layers (all of them!)
-num_layers = len(config.hidden_layers) + 2
-
-# number of nodes in each layer
-layer_lengths = np.array([X.shape[1]] + config.hidden_layers + [y.shape[1]])
-if layer_lengths.shape[0] != num_layers:
-    print("Error! Number of layers undefined!")
-
-# %%
+import pandas as pd
+import joblib
 
 class BackpropagationNeuralNetwork():
     def __init__(self, config: Config):
@@ -66,12 +23,12 @@ class BackpropagationNeuralNetwork():
         if save_result:
             self.weight_history = [self.__current_weights_deep_copy()]
 
-        batch_size = int(self.config.batch_portion * N)
+        batch_size = int(self.config.batch_portion * self.N)
 
         for j in range(self.num_iterations):
-            indexes = np.random.random_integers(0, N-1, batch_size)
-            batch_X = X[indexes]
-            batch_y = y[indexes]
+            indices = np.random.random_integers(0, self.N - 1, batch_size)
+            batch_X = X[indices]
+            batch_y = y[indices]
             self.__calculate_outputs(batch_X)
             self.__calculate_errors(batch_X, batch_y)
             self.__calculate_gradients()
@@ -98,10 +55,8 @@ class BackpropagationNeuralNetwork():
 
         return self.out_activation(result[-1])
 
-    def score(self, X, y, one_hot_decode_y=False):
+    def score(self, X, y):
         y_predicted = self.predict(X)
-        if one_hot_decode_y:
-            y_predicted = one_hot_decode(y_predicted, min_class = 1)
         
         print(np.mean(y == y_predicted))
         with np.printoptions(precision=3, suppress=True):
@@ -230,19 +185,3 @@ class BackpropagationNeuralNetwork():
                 self.config.moment * self.previous_weights_diff[i]
             self.weight_matrices[i] += -delta_w
             self.previous_weights_diff[i] = delta_w
-            
-
-
-# %%
-config = Config()
-config.num_iterations = 10000
-nn = BackpropagationNeuralNetwork(config)
-nn.fit(X, y, True)
-
-# %%
-nn.score(X_test.values, y_test)
-
-# %%
-nn.score(X_test.values, test["cls"], one_hot_decode_y = True)
-
-# %%
