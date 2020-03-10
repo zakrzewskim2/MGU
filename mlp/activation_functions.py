@@ -3,8 +3,8 @@ import numpy as np
 
 def softmax(x, derivative=False):
     if not derivative:
-        denominators = np.sum(np.exp(x), axis=1)
-        return np.exp(x) / denominators[:, None]
+        e_x = np.exp(x - np.max(x))
+        return e_x / e_x.sum()
     else:
         diag_3d = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
         np.einsum('iji->ji', diag_3d)[...] = np.ones((x.shape[0], x.shape[1]))
