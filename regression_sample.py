@@ -1,8 +1,8 @@
 # %%
 import pandas as pd
 
-train = pd.read_csv("data/regression/data.cube.train.100.csv")
-test = pd.read_csv("data/regression/data.cube.test.100.csv")
+train = pd.read_csv("data/regression/data.activation.train.100.csv")
+test = pd.read_csv("data/regression/data.activation.test.100.csv")
 X_train, y_train = train.iloc[:, :-1], train.y
 X_test, y_test = test.iloc[:, :-1], test.y
 

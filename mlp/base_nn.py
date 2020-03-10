@@ -3,6 +3,7 @@ from .params import Config
 import numpy as np
 import pandas as pd
 import joblib
+import random
 
 class BackpropagationNeuralNetwork():
     def __init__(self, config: Config):
@@ -24,7 +25,7 @@ class BackpropagationNeuralNetwork():
         batch_size = int(self.config.batch_portion * self.N)
 
         for j in range(self.num_iterations):
-            indices = np.random.random_integers(0, self.N - 1, batch_size)
+            indices = random.sample(range(0, self.N), batch_size)
             batch_X = X[indices]
             batch_y = y[indices]
             self.__calculate_outputs(batch_X)
@@ -33,6 +34,7 @@ class BackpropagationNeuralNetwork():
             self.__adjust_weights()
 
             if j % 1000 == 0:
+                self.alpha *= 0.95
                 print("Error:",
                       self.error_function(self.out_activation(self.outputs[-1]), batch_y))
 
