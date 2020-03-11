@@ -100,9 +100,9 @@ class BackpropagationNeuralNetwork():
             nrows = self.layer_lengths[i]
             ncols = self.layer_lengths[i + 1]
 
-            # Initial weights from [-1,1], with first row as bias
-            weights = 2 * np.random.random((nrows, ncols)) - 1
-            bias = 2 * np.random.random((1, ncols)) - 1 if self.config.bias \
+            # Initial small weights from normal distribution, with first row as bias
+            weights = np.random.randn(nrows, ncols) * 0.1
+            bias = np.random.randn(1, ncols) * 0.1 if self.config.bias \
                     else np.zeros((1, ncols))
             weights = np.insert(weights, 0, bias, axis=0)
             self.weight_matrices.append(weights)
