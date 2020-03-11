@@ -10,7 +10,7 @@ import pandas as pd
 class MLPRegressor(BackpropagationNeuralNetwork):
     def __init__(self, activation_function = activation_functions.sigmoid, \
             error_function = error_functions.mean_squared, \
-            hidden_layers = [3], bias = True, batch_portion = 1, \
+            hidden_layers = [3], bias = True, batch_portion = 0.5, \
             num_iterations = 100000, eta = 0.1, moment = 0):
         config = Config()
         config.out_activation_function = activation_functions.linear

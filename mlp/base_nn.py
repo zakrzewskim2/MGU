@@ -16,6 +16,7 @@ class BackpropagationNeuralNetwork():
         self.out_activation = self.config.out_activation_function
 
     def fit(self, X, y, random_seed=12369666, serialize_path=None):
+        random.seed(random_seed)
         self.__initialize_structures(X, y)
         self.__initialize_weights(random_seed)
 
