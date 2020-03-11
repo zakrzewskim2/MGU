@@ -2,8 +2,9 @@ import numpy as np
 
 
 def softmax(x, derivative=False):
+    x = x - np.max(x)
     if not derivative:
-        e_x = np.exp(x - np.max(x))
+        e_x = np.exp(x)
         return e_x / e_x.sum()
     else:
         diag_3d = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
