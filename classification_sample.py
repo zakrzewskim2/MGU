@@ -64,34 +64,3 @@ plt.scatter(X_train.x, X_train.y, c = y_train)
 # %%
 import matplotlib.pyplot as plt
 plt.scatter(X_test.x, X_test.y, c = y_test)
-
-##----------------------------------------------------------------
-
-# %%
-import pandas as pd
-import numpy as np
-
-train = pd.read_csv("data/digits/train.csv.zip")
-test = pd.read_csv("data/digits/test.csv.zip")
-import random as rand
-indices = rand.sample(range(0, train.shape[0]), 2000)
-X_train, y_train = train.iloc[indices, 1:], train.iloc[indices, 0]
-
-X_train/=255
-
-# %%
-from mlp.mlp_classifier import MLPClassifier
-
-clf = MLPClassifier()
-tt = clf.fit(X_train, y_train)
-
-# %%
-print("train", tt.score(X_train, y_train))
-
-# %%
-X_test, y_test = train.iloc[:, 1:], train.iloc[:, 0]
-X_test/=255
-print("test", tt.score(X_test, y_test))
-
-
-# %%
