@@ -36,7 +36,8 @@ class BackpropagationNeuralNetwork():
 
             if j % 1000 == 0:
                 self.alpha *= 0.95
-                print("Error:",
+                with np.printoptions(precision=3, suppress=True):
+                    print(f"Iter: {j}/{self.num_iterations} Error:",
                       self.error_function(self.out_activation(self.outputs[-1]), batch_y))
 
             self.weight_history.append(self.__current_weights_deep_copy())

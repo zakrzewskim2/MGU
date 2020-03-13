@@ -8,10 +8,10 @@ import numpy as np
 import pandas as pd
 
 class MLPClassifier(BackpropagationNeuralNetwork):
-    def __init__(self, activation_function = activation_functions.softmax, \
+    def __init__(self, activation_function = activation_functions.sigmoid, \
             error_function = error_functions.cross_entropy, \
-            hidden_layers = [5, 5, 3], bias = True, batch_portion = 0.5, \
-            num_iterations = 100000, eta = 0.1, moment = 0):
+            hidden_layers = [49, 49], bias = True, batch_portion = 0.5, \
+            num_iterations = 20000, eta = 0.07, moment = 0.5):
         config = Config()
         config.out_activation_function = activation_functions.softmax
 
