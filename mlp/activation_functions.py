@@ -22,6 +22,8 @@ def softmax(x, derivative=False):
 def __to_3d_derivative(x, base_derivative):
     diag_3d = np.zeros((x.shape[1], x.shape[0], x.shape[1]))
     np.einsum('iji->ji', diag_3d)[...] = np.ones((x.shape[0], x.shape[1]))
+    if type(base_derivative) == int:
+        return base_derivative * diag_3d
     return diag_3d * base_derivative[None, :, :]
 
 
