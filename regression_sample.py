@@ -1,10 +1,12 @@
 # %%
 import pandas as pd
-
+import numpy as np
 train = pd.read_csv("data/projekt1_test/Regression/data.square.train.100.csv")
 test = pd.read_csv("data/projekt1_test/Regression/data.square.test.100.csv")
+
 X_train, y_train = train.iloc[:, :-1], train.y
 X_test, y_test = test.iloc[:, :-1], test.y
+
 
 # %%
 from mlp.mlp_regressor import MLPRegressor
@@ -36,7 +38,7 @@ def regression_line_plot(estimator, x, y):
     plt.scatter(x, y, s = 5, edgecolor='k')
     plt.plot(xx, yy, 'r--')
 
-regression_line_plot(estimator, X_test[:, 0], y_test)
+regression_line_plot(estimator, X_test.iloc[:, 0], y_test)
 
 # %%
 import matplotlib.pyplot as plt

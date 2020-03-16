@@ -11,8 +11,8 @@ import pandas as pd
 class MLPRegressor(BackpropagationNeuralNetwork):
     def __init__(self, activation_function = activation_functions.tanh, \
             error_function = error_functions.mean_squared, \
-            hidden_layers = [10], bias = True, batch_portion = 0.4, \
-            num_iterations = 10000, eta = 0.1, moment = 0):
+            hidden_layers = [2], bias = False, batch_portion = 0.8, \
+            num_iterations = 100000, eta = 0.1, moment = 0):
         config = Config()
         config.out_activation_function = activation_functions.linear
 
