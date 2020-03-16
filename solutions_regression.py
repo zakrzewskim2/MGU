@@ -49,21 +49,6 @@ estimator = MLPRegressor(activation_function = \
 process_regression_dataset('activation', estimator, \
     datasets_path_format='data/regression/data.{}.{}.{}.csv')
 
-# %% square
-estimator = MLPRegressor(activation_function = \
-        activation_functions.tanh, \
-    error_function = error_functions.mean_squared, \
-    hidden_layers = [8, 8, 8], bias = True, batch_portion = 0.8, \
-    num_iterations = 10000, eta = 0.4, moment = 0)
-
-<<<<<<< HEAD
-process_regression_dataset('multimodal', estimator,size=100, \
-    datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv')
-=======
-process_regression_dataset('square', estimator, size=100, \
-    datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
-    normalize=True)
-
 # %% cube
 estimator = MLPRegressor(activation_function = \
         activation_functions.sigmoid, \
@@ -73,6 +58,38 @@ estimator = MLPRegressor(activation_function = \
 
 process_regression_dataset('cube', estimator, \
     datasets_path_format='data/regression/data.{}.{}.{}.csv')
->>>>>>> 775b0dda5033b1ac54b9e5ace9ff31a1fbf2027e
+
+# %% linear
+estimator = MLPRegressor(activation_function = \
+        activation_functions.tanh, \
+    error_function = error_functions.mean_squared, \
+    hidden_layers = [], bias = True, batch_portion = 0.8, \
+    num_iterations = 1000, eta = 0.4, moment = 0)
+
+process_regression_dataset('linear', estimator, size=100, \
+    datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
+    normalize=True)
+
+# %% square
+estimator = MLPRegressor(activation_function = \
+        activation_functions.tanh, \
+    error_function = error_functions.mean_squared, \
+    hidden_layers = [8, 8, 8], bias = True, batch_portion = 0.8, \
+    num_iterations = 10000, eta = 0.4, moment = 0)
+
+process_regression_dataset('square', estimator, size=100, \
+    datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
+    normalize=True)
+
+# %% multimodal
+estimator = MLPRegressor(activation_function = \
+        activation_functions.tanh, \
+    error_function = error_functions.mean_squared, \
+    hidden_layers = [8, 8, 8], bias = True, batch_portion = 0.8, \
+    num_iterations = 10000, eta = 0.4, moment = 0)
+
+process_regression_dataset('multimodal', estimator, size=100, \
+    datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
+    normalize=True)
 
 # %%
