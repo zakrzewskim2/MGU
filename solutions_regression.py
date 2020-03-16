@@ -1,6 +1,7 @@
 # %%
 import joblib
 import pandas as pd
+import numpy as np
 
 from mlp.mlp_regressor import MLPRegressor
 import mlp.activation_functions as activation_functions
@@ -12,6 +13,9 @@ vis = Visualizer()
 def process_regression_dataset(name, estimator, size = 100, datasets_path_format = "data/projekt1_test/Regression/data.{}.{}.{}.csv"):
     train = pd.read_csv(datasets_path_format.format(name, 'train', size))
     test = pd.read_csv(datasets_path_format.format(name, 'test', size))
+
+    train /= np.max(np.abs(train))
+    test /= np.max(np.abs(test))
 
     X_train, y_train = train.iloc[:, :-1], train.y
     X_test, y_test = test.iloc[:, :-1], test.y
@@ -30,12 +34,12 @@ def process_regression_dataset(name, estimator, size = 100, datasets_path_format
 
 # %% activation
 estimator = MLPRegressor(activation_function = \
-        activation_functions.sigmoid, \
+        activation_functions.tanh, \
     error_function = error_functions.mean_squared, \
-    hidden_layers = [10, 10], bias = True, batch_portion = 0.5, \
-    num_iterations = 40000, eta = 0.1, moment = 0)
+    hidden_layers = [10, 10, 10], bias = True, batch_portion = 1, \
+    num_iterations = 20000, eta = 0.4, moment = 0)
 
-process_regression_dataset('activation', estimator, \
-    datasets_path_format='data/regression/data.{}.{}.{}.csv')
+process_regression_dataset('square', estimator,size=100, \
+    datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv')
 
 # %%
