@@ -42,10 +42,10 @@ def process_regression_dataset(name, estimator, size = 100, datasets_path_format
 estimator = MLPRegressor(activation_function = \
         activation_functions.tanh, \
     error_function = error_functions.mean_squared, \
-    hidden_layers = [10, 10, 10], bias = True, batch_portion = 1, \
-    num_iterations = 20000, eta = 0.4, moment = 0)
+    hidden_layers = [8, 8, 8], bias = True, batch_portion = 0.8, \
+    num_iterations = 10000, eta = 0.4, moment = 0)
 
-process_regression_dataset('square', estimator,size=100, \
+process_regression_dataset('multimodal', estimator,size=100, \
     datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv')
 
 # %%
