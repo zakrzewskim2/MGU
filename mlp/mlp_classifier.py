@@ -55,6 +55,9 @@ class MLPClassifier(BackpropagationNeuralNetwork):
         return np.mean(y == predicted_y)
 
     def error_by_iteration(self, X, y):
+        X = self.__check_if_X_is_valid(X)
+        y = self.__check_if_y_is_valid(y)
+        
         encoded_y = self.__one_hot_encode(y, self.min_class, self.max_class)
         return super().error_by_iteration(X, encoded_y)
 
@@ -81,7 +84,7 @@ class MLPClassifier(BackpropagationNeuralNetwork):
             y = y.values
 
         if type(y) != np.ndarray:
-            raise ValueError('X and y should be of type pandas.DataFrame or np.ndarray')
+            raise ValueError('y should be of type pandas.DataFrame or np.ndarray')
         else:
             if y.ndim != 1:
                 raise ValueError('y should be 1D')

@@ -16,6 +16,11 @@ class BackpropagationNeuralNetwork():
         self.out_activation = self.config.out_activation_function
 
     def fit(self, X, y, random_seed=12369666, serialize_path=None):
+        if type(X) == pd.Series:
+            X = X.values
+        if type(y) == pd.Series:
+            y = y.values
+        
         random.seed(random_seed)
         self.__initialize_structures(X, y)
         self.__initialize_weights(random_seed)
@@ -46,6 +51,9 @@ class BackpropagationNeuralNetwork():
             self.__serialize_training_info(serialize_path)
 
     def predict(self, X):
+        if type(X) == pd.Series:
+            X = X.values
+        
         result = []
         result.append(self.__append_bias_input_column(X))
         for i in range(0, self.num_layers - 2):
@@ -57,6 +65,11 @@ class BackpropagationNeuralNetwork():
         return self.out_activation(result[-1])
 
     def score(self, X, y):
+        if type(X) == pd.Series:
+            X = X.values
+        if type(y) == pd.Series:
+            y = y.values
+        
         y_predicted = self.predict(X)
         
         print(np.mean(y == y_predicted))
@@ -66,6 +79,11 @@ class BackpropagationNeuralNetwork():
             print("Error:\n", self.error_function(y_predicted, y))
 
     def error_by_iteration(self, X, y):
+        if type(X) == pd.Series:
+            X = X.values
+        if type(y) == pd.Series:
+            y = y.values
+
         iteration_errors = []
         for weights in self.weight_history:
             outputs, _ = \

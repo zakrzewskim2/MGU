@@ -59,6 +59,9 @@ class MLPRegressor(BackpropagationNeuralNetwork):
         #return standard_error_of_the_estimate(predicted_y, y)
 
     def error_by_iteration(self, X, y):
+        X = self.__check_if_X_is_valid(X)
+        y = self.__check_if_y_is_valid(y)
+
         y = y.reshape(-1, 1)
         return super().error_by_iteration(X, y)
 
@@ -79,9 +82,6 @@ class MLPRegressor(BackpropagationNeuralNetwork):
             y = y.values
 
         if type(y) != np.ndarray:
-            raise ValueError('X and y should be of type pandas.DataFrame or np.ndarray')
-        else:
-            if y.ndim != 1:
-                raise ValueError('y should be 1D')
+            raise ValueError('y should be of type pandas.DataFrame or np.ndarray')
         
         return y
