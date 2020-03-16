@@ -27,9 +27,15 @@ def process_regression_dataset(name, estimator, size = 100, datasets_path_format
         f'results/regression/{name}-{size}-clf.joblib')
     vis.plot_regression_result(estimator, \
         X_test.x, y_test, \
-        save_path = f'results/regression/{name}-{size}-result.png')
+        show = True, \
+        save_path = f'results/regression/{name}-{size}-result-test.png')
+    vis.plot_regression_result(estimator, \
+        X_train.x, y_train, \
+        show = True, \
+        save_path = f'results/regression/{name}-{size}-result-train.png')
     vis.plot_train_test_error(estimator, \
         X_train, y_train, X_test, y_test, \
+        show = True, \
         save_path = f'results/regression/{name}-{size}-error.png')
 
 # %% activation
