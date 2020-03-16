@@ -13,37 +13,24 @@ estimator = MLPRegressor()
 estimator.fit(X_train, y_train).score(X_test, y_test)
 
 # %%
-train_errors = estimator.error_by_iteration(X_train.values, y_train.values)
-test_errors = estimator.error_by_iteration(X_test.values, y_test.values)
+from visualizer import Visualizer
+vis = Visualizer()
+vis.plot_train_test_error(estimator, X_train, y_train, \
+    X_test, y_test, log_scale=True)
 
 # %%
-import matplotlib.pyplot as plt
-plt.yscale('log')
-plt.plot(train_errors)
-plt.plot(test_errors)
+from visualizer import Visualizer
+vis = Visualizer()
+vis.plot_regression_result(estimator, X_test.x, y_test)
 
 # %%
-import matplotlib.pyplot as plt
-import numpy as np
-
-def regression_line_plot(estimator, x, y):
-    x_min, x_max = np.min(x) - 1, np.max(x) + 1
-    xx = np.arange(x_min, x_max, 0.1)
-
-    yy = estimator.predict(xx.reshape(-1, 1))
-    yy = yy.reshape(xx.shape)
-
-    plt.scatter(x, y, s = 5, edgecolor='k')
-    plt.plot(xx, yy, 'r--')
-
-regression_line_plot(estimator, X_test[:, 0], y_test)
+from visualizer import Visualizer
+vis = Visualizer()
+vis.plot_regression_dataset(X_train, y_train)
 
 # %%
-import matplotlib.pyplot as plt
-plt.scatter(X_train, y_train)
-
-# %%
-import matplotlib.pyplot as plt
-plt.scatter(X_test, y_test)
+from visualizer import Visualizer
+vis = Visualizer()
+vis.plot_regression_dataset(X_test, y_test)
 
 # %%
