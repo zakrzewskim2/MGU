@@ -19,13 +19,13 @@ def process_classification_dataset(name, clf, size = 100, datasets_path_format =
     clf.fit(X_train, y_train)
     print(clf.score(X_test, y_test))
 
-    joblib.dump(clf, f'results/{name}-{size}-clf.joblib')
+    joblib.dump(clf, f'results/classification/{name}-{size}-clf.joblib')
     vis.plot_classification_result(clf, \
         X_test.x, X_test.y, y_test, \
-        save_path = f'results/{name}-{size}-result.png')
+        save_path = f'results/classification/{name}-{size}-result.png')
     vis.plot_train_test_error(clf, \
         X_train, y_train, X_test, y_test, \
-        save_path = f'results/{name}-{size}-error.png')
+        save_path = f'results/classification/{name}-{size}-error.png')
 
 # %% circles
 clf = MLPClassifier(activation_function = \
