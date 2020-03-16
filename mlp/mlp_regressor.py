@@ -3,15 +3,16 @@ from .params import Config
 
 import mlp.activation_functions as activation_functions
 import mlp.error_functions as error_functions
+from sklearn.metrics import r2_score
 
 import numpy as np
 import pandas as pd
 
 class MLPRegressor(BackpropagationNeuralNetwork):
-    def __init__(self, activation_function = activation_functions.sigmoid, \
+    def __init__(self, activation_function = activation_functions.tanh, \
             error_function = error_functions.mean_squared, \
-            hidden_layers = [3], bias = True, batch_portion = 0.5, \
-            num_iterations = 100000, eta = 0.1, moment = 0):
+            hidden_layers = [10], bias = True, batch_portion = 0.4, \
+            num_iterations = 10000, eta = 0.1, moment = 0):
         config = Config()
         config.out_activation_function = activation_functions.linear
 
@@ -48,12 +49,14 @@ class MLPRegressor(BackpropagationNeuralNetwork):
         y = self.__check_if_y_is_valid(y)
 
         predicted_y = self.predict(X)
+        
+        return r2_score(y, predicted_y)
 
-        def standard_error_of_the_estimate(predicted_y, y):
-            n = y.shape[0]
-            return np.sqrt(np.sum((predicted_y - y)**2) / n)
+        # def standard_error_of_the_estimate(predicted_y, y):
+        #     n = y.shape[0]
+        #     return np.sqrt(np.sum((predicted_y - y)**2) / n)
 
-        return standard_error_of_the_estimate(predicted_y, y)
+        #return standard_error_of_the_estimate(predicted_y, y)
 
     def error_by_iteration(self, X, y):
         y = y.reshape(-1, 1)

@@ -1,8 +1,8 @@
 # %%
 import pandas as pd
 
-train = pd.read_csv("data/classification/data.simple.train.100.csv")
-test = pd.read_csv("data/classification/data.simple.test.100.csv")
+train = pd.read_csv("data/projekt1_test/Classification/data.circles.train.100.csv")
+test = pd.read_csv("data/projekt1_test/Classification/data.circles.test.100.csv")
 X_train, y_train = train.iloc[:, :-1], train.cls
 X_test, y_test = test.iloc[:, :-1], test.cls
 
