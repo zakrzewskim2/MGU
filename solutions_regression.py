@@ -34,10 +34,10 @@ def process_regression_dataset(name, estimator, normalize = False, size = 100, d
         X_train.x, y_train, \
         show = True, \
         save_path = f'results/regression/{name}-{size}-result-train.png')
-    vis.plot_train_test_error(estimator, \
-        X_train, y_train, X_test, y_test, \
-        show = True, \
-        save_path = f'results/regression/{name}-{size}-error.png')
+    # vis.plot_train_test_error(estimator, \
+    #     X_train, y_train, X_test, y_test, \
+    #     show = True, \
+    #     save_path = f'results/regression/{name}-{size}-error.png')
 
 # %% activation
 estimator = MLPRegressor(activation_function = \
@@ -85,11 +85,11 @@ process_regression_dataset('square', estimator, size=100, \
 estimator = MLPRegressor(activation_function = \
         activation_functions.tanh, \
     error_function = error_functions.mean_squared, \
-    hidden_layers = [8, 8, 8], bias = True, batch_portion = 0.8, \
-    num_iterations = 10000, eta = 0.4, moment = 0)
+    hidden_layers = [20, 20, 20], bias = True, batch_portion = 0.8, \
+    num_iterations = 100000, eta = 0.0002, moment = 0.1)
 
 process_regression_dataset('multimodal', estimator, size=100, \
     datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
-    normalize=True)
+    normalize=False)
 
 # %%
