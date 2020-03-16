@@ -54,7 +54,7 @@ clf = MLPClassifier(activation_function = \
 
 process_classification_dataset('noisyXOR', clf)
 
-# %%
+# %% simple
 clf = MLPClassifier(activation_function = \
         activation_functions.sigmoid, \
     error_function = error_functions.cross_entropy, \
@@ -64,7 +64,7 @@ clf = MLPClassifier(activation_function = \
 process_classification_dataset('simple', clf, \
     datasets_path_format='data/classification/data.{}.{}.{}.csv')
 
-# %%
+# %% three_gauss
 clf = MLPClassifier(activation_function = \
         activation_functions.sigmoid, \
     error_function = error_functions.cross_entropy, \
