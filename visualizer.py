@@ -98,15 +98,24 @@ class Visualizer():
                 draw_graph(G, weight_matrices, with_colorbar=True)
         plt.show()
 
-    def plot_classification_dataset(self, x, y, classes):
+    def plot_classification_dataset(self, x, y, classes, \
+            show = False, save_path = None):
         plt.scatter(x, y, c = classes)
-        plt.show()
+        if type(save_path) is str:
+            plt.savefig(save_path, dpi = 300)
+        if show:
+            plt.show()
 
-    def plot_regression_dataset(self, x, y):
+    def plot_regression_dataset(self, x, y, \
+            show = False, save_path = None):
         plt.scatter(x, y)
-        plt.show()
+        if type(save_path) is str:
+            plt.savefig(save_path, dpi = 300)
+        if show:
+            plt.show()
 
-    def plot_classification_result(self, clf, x, y, real_class):
+    def plot_classification_result(self, clf, x, y, real_class, \
+            show = False, save_path = None):
         x_min, x_max = np.min(x) - 1, np.max(x) + 1
         y_min, y_max = np.min(y) - 1, np.max(y) + 1
         xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
@@ -117,9 +126,13 @@ class Visualizer():
 
         plt.contourf(xx, yy, z, alpha=0.4)
         plt.scatter(x, y, c=real_class, s=20, edgecolor='k')
-        plt.show()
+        if type(save_path) is str:
+            plt.savefig(save_path, dpi = 300)
+        if show:
+            plt.show()
 
-    def plot_regression_result(self, estimator, x, y):
+    def plot_regression_result(self, estimator, x, y, \
+            show = False, save_path = None):
         x_min, x_max = np.min(x) - 1, np.max(x) + 1
         xx = np.arange(x_min, x_max, 0.1)
 
@@ -128,9 +141,14 @@ class Visualizer():
 
         plt.scatter(x, y, s = 5, edgecolor='k')
         plt.plot(xx, yy, 'r--')
-        plt.show()
+        if type(save_path) is str:
+            plt.savefig(save_path, dpi = 300)
+        if show:
+            plt.show()
 
-    def plot_train_test_error(self, estimator, X_train, y_train, X_test, y_test, log_scale = True):
+    def plot_train_test_error(self, estimator, \
+            X_train, y_train, X_test, y_test, log_scale = True, \
+            show = False, save_path = None):
         train_errors = estimator.error_by_iteration(X_train, y_train)
         test_errors = estimator.error_by_iteration(X_test, y_test)
 
@@ -138,4 +156,7 @@ class Visualizer():
             plt.yscale('log')
         plt.plot(train_errors)
         plt.plot(test_errors)
-        plt.show()
+        if type(save_path) is str:
+            plt.savefig(save_path, dpi = 300)
+        if show:
+            plt.show()
