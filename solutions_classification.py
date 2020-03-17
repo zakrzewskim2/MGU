@@ -23,21 +23,21 @@ def process_classification_dataset(name, clf, \
         X_train /= np.max(np.abs(X_train))/4
         X_test /= np.max(np.abs(X_test))/4
 
-    # clf.fit(X_train, y_train)
-    # print(clf.score(X_test, y_test))
+    clf.fit(X_train, y_train)
+    print(clf.score(X_test, y_test))
 
-    # joblib.dump(clf, \
-    #     f'results/classification/{name}-{size}-clf.joblib')
+    joblib.dump(clf, \
+        f'results/classification/{name}-{size}-clf.joblib')
     vis.plot_classification_dataset(X_train.x, X_train.y, \
         y_train, show = True, \
         save_path = f'results/classification/{name}-{size}-train.png')
-    # vis.plot_classification_result(clf, \
-    #     X_test.x, X_test.y, y_test, show = True, \
-    #     save_path = f'results/classification/{name}-{size}-result.png', \
-    #     margin = plot_margin, grid_size = plot_size)
-    # vis.plot_train_test_error(clf, \
-    #     X_train, y_train, X_test, y_test, \
-    #     save_path = f'results/classification/{name}-{size}-error.png')
+    vis.plot_classification_result(clf, \
+        X_test.x, X_test.y, y_test, show = True, \
+        save_path = f'results/classification/{name}-{size}-result.png', \
+        margin = plot_margin, grid_size = plot_size)
+    vis.plot_train_test_error(clf, \
+        X_train, y_train, X_test, y_test, \
+        save_path = f'results/classification/{name}-{size}-error.png')
 
 # %% circles
 clf = MLPClassifier(activation_function = \
