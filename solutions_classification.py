@@ -1,6 +1,7 @@
 # %%
 import joblib
 import pandas as pd
+import numpy as np
 
 from mlp.mlp_classifier import MLPClassifier
 import mlp.activation_functions as activation_functions
@@ -9,12 +10,17 @@ import mlp.error_functions as error_functions
 from visualizer import Visualizer
 vis = Visualizer()
 
-def process_classification_dataset(name, clf, size = 100, datasets_path_format = "data/projekt1_test/Classification/data.{}.{}.{}.csv"):
+def process_classification_dataset(name, clf, normalize=False, size = 100, datasets_path_format = "data/projekt1_test/Classification/data.{}.{}.{}.csv"):
     train = pd.read_csv(datasets_path_format.format(name, 'train', size))
     test = pd.read_csv(datasets_path_format.format(name, 'test', size))
 
+
     X_train, y_train = train.iloc[:, :-1], train.cls
     X_test, y_test = test.iloc[:, :-1], test.cls
+
+    if normalize:
+        X_train /= np.max(X_train)
+        X_test /= np.max(X_test)
 
     clf.fit(X_train, y_train)
     print(clf.score(X_test, y_test))
@@ -72,7 +78,18 @@ clf = MLPClassifier(activation_function = \
     hidden_layers = [5, 5, 3], bias = True, batch_portion = 0.5, \
     num_iterations = 40000, eta = 0.1, moment = 0)
 
-process_classification_dataset('three_gauss', clf, \
+process_classification_dataset('three_gauss', clf, normalize=True, \
     datasets_path_format='data/classification/data.{}.{}.{}.csv')
+
+# %% windows
+clf = MLPClassifier(activation_function = \
+        activation_functions.tanh, \
+    error_function = error_functions.cross_entropy, \
+    hidden_layers = [30, 30], bias = True, batch_portion = 0.7, \
+    num_iterations = 30000, eta = 0.2, moment = 0.2)
+
+process_classification_dataset('windows', clf, normalize=True, \
+    datasets_path_format='data/classification/data.{}.{}.{}.csv')
+
 
 # %%
