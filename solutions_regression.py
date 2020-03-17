@@ -28,6 +28,9 @@ def process_regression_dataset(name, estimator, \
 
     joblib.dump(estimator, \
         f'results/regression/{name}-{size}-clf.joblib')
+    vis.plot_regression_dataset(X_train.x, \
+        y_train, show = True, \
+        save_path = f'results/regression/{name}-{size}-train.png')
     vis.plot_regression_result(estimator, \
         X_test.x, y_test, \
         show = True, \
@@ -68,7 +71,7 @@ estimator = MLPRegressor(activation_function = \
     hidden_layers = [], bias = True, batch_portion = 0.8, \
     num_iterations = 1000, eta = 0.4, moment = 0)
 
-process_regression_dataset('linear', estimator, size=100, \
+process_regression_dataset('linear', estimator, \
     datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
     normalize=True)
 
