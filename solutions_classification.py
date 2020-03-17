@@ -19,8 +19,8 @@ def process_classification_dataset(name, clf, normalize=False, size = 100, datas
     X_test, y_test = test.iloc[:, :-1], test.cls
 
     if normalize:
-        X_train /= np.max(X_train)
-        X_test /= np.max(X_test)
+        X_train /= np.max(np.abs(X_train))
+        X_test /= np.max(np.abs(X_test))
 
     clf.fit(X_train, y_train)
     print(clf.score(X_test, y_test))
