@@ -19,20 +19,20 @@ def process_classification_dataset(name, clf, normalize=False, size = 100, datas
     X_test, y_test = test.iloc[:, :-1], test.cls
 
     if normalize:
-        X_train /= np.max(np.abs(X_train))
-        X_test /= np.max(np.abs(X_test))
+        X_train /= np.max(np.abs(X_train))/4
+        X_test /= np.max(np.abs(X_test))/4
 
     clf.fit(X_train, y_train)
     print(clf.score(X_test, y_test))
 
-    joblib.dump(clf, \
-        f'results/classification/{name}-{size}-clf.joblib')
-    vis.plot_classification_result(clf, \
-        X_test.x, X_test.y, y_test, \
-        save_path = f'results/classification/{name}-{size}-result.png')
-    vis.plot_train_test_error(clf, \
-        X_train, y_train, X_test, y_test, \
-        save_path = f'results/classification/{name}-{size}-error.png')
+    # joblib.dump(clf, \
+    #     f'results/classification/{name}-{size}-clf.joblib')
+    # vis.plot_classification_result(clf, \
+    #     X_test.x, X_test.y, y_test, \
+    #     save_path = f'results/classification/{name}-{size}-result.png')
+    # vis.plot_train_test_error(clf, \
+    #     X_train, y_train, X_test, y_test, \
+    #     save_path = f'results/classification/{name}-{size}-error.png')
 
 # %% circles
 clf = MLPClassifier(activation_function = \
@@ -65,10 +65,10 @@ process_classification_dataset('noisyXOR', clf)
 clf = MLPClassifier(activation_function = \
         activation_functions.sigmoid, \
     error_function = error_functions.cross_entropy, \
-    hidden_layers = [5, 5, 3], bias = True, batch_portion = 0.5, \
+    hidden_layers = [], bias = True, batch_portion = 0.5, \
     num_iterations = 40000, eta = 0.1, moment = 0)
 
-process_classification_dataset('simple', clf, \
+process_classification_dataset('simple', clf, size=1000, \
     datasets_path_format='data/classification/data.{}.{}.{}.csv')
 
 # %% three_gauss
