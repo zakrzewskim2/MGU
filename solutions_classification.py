@@ -29,7 +29,7 @@ def process_classification_dataset(name, clf, \
     joblib.dump(clf, \
         f'results/classification/{name}-{size}-clf.joblib')
     vis.plot_classification_result(clf, \
-        X_test.x, X_test.y, y_test, \
+        X_test.x, X_test.y, y_test, show = True, \
         save_path = f'results/classification/{name}-{size}-result.png', \
         margin = plot_margin, grid_size = plot_size)
     vis.plot_train_test_error(clf, \
@@ -92,6 +92,6 @@ clf = MLPClassifier(activation_function = \
 
 process_classification_dataset('windows', clf, normalize=True, \
     datasets_path_format='data/classification/data.{}.{}.{}.csv', \
-    plot_margin=0.5)
+    plot_margin=0.25, plot_size=100)
 
 # %%
