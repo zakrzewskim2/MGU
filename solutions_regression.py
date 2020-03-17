@@ -10,7 +10,9 @@ import mlp.error_functions as error_functions
 from visualizer import Visualizer
 vis = Visualizer()
 
-def process_regression_dataset(name, estimator, normalize = False, size = 100, datasets_path_format = "data/projekt1_test/Regression/data.{}.{}.{}.csv"):
+def process_regression_dataset(name, estimator, \
+        normalize = False, size = 100, \
+        datasets_path_format = "data/projekt1_test/Regression/data.{}.{}.{}.csv"):
     train = pd.read_csv(datasets_path_format.format(name, 'train', size))
     test = pd.read_csv(datasets_path_format.format(name, 'test', size))
 

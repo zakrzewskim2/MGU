@@ -115,12 +115,12 @@ class Visualizer():
             plt.show()
 
     def plot_classification_result(self, clf, x, y, real_class, \
-            margin = 1, grid_point_distance = 0.1, \
+            margin = 1, grid_size = 40, \
             show = False, save_path = None):
         x_min, x_max = np.min(x) - margin, np.max(x) + margin
         y_min, y_max = np.min(y) - margin, np.max(y) + margin
-        xx, yy = np.meshgrid(np.arange(x_min, x_max, grid_point_distance),
-                            np.arange(y_min, y_max, grid_point_distance))
+        xx, yy = np.meshgrid(np.linspace(x_min, x_max, grid_size),
+                             np.linspace(y_min, y_max, grid_size))
 
         z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
         z = z.reshape(xx.shape)

@@ -10,10 +10,11 @@ import mlp.error_functions as error_functions
 from visualizer import Visualizer
 vis = Visualizer()
 
-def process_classification_dataset(name, clf, normalize=False, size = 100, datasets_path_format = "data/projekt1_test/Classification/data.{}.{}.{}.csv"):
+def process_classification_dataset(name, clf, \
+        normalize=False, size = 100, plot_margin = 1, plot_size = 40, \
+        datasets_path_format = "data/projekt1_test/Classification/data.{}.{}.{}.csv"):
     train = pd.read_csv(datasets_path_format.format(name, 'train', size))
     test = pd.read_csv(datasets_path_format.format(name, 'test', size))
-
 
     X_train, y_train = train.iloc[:, :-1], train.cls
     X_test, y_test = test.iloc[:, :-1], test.cls
@@ -29,7 +30,8 @@ def process_classification_dataset(name, clf, normalize=False, size = 100, datas
         f'results/classification/{name}-{size}-clf.joblib')
     vis.plot_classification_result(clf, \
         X_test.x, X_test.y, y_test, \
-        save_path = f'results/classification/{name}-{size}-result.png')
+        save_path = f'results/classification/{name}-{size}-result.png', \
+        margin = plot_margin, grid_size = plot_size)
     vis.plot_train_test_error(clf, \
         X_train, y_train, X_test, y_test, \
         save_path = f'results/classification/{name}-{size}-error.png')
@@ -89,7 +91,7 @@ clf = MLPClassifier(activation_function = \
     num_iterations = 30000, eta = 0.2, moment = 0.2)
 
 process_classification_dataset('windows', clf, normalize=True, \
-    datasets_path_format='data/classification/data.{}.{}.{}.csv')
-
+    datasets_path_format='data/classification/data.{}.{}.{}.csv', \
+    plot_margin=0.5)
 
 # %%
