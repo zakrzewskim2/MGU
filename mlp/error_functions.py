@@ -2,9 +2,9 @@ import numpy as np
 
 
 def __delta(y_predicted, y):
-    result = np.where(y < y_predicted,
-                      1,
-                      np.where(y > y_predicted, 0, -1))
+    result = np.zeros(y.shape)
+    result[np.where(y < y_predicted)] = 1
+    result[np.where(y > y_predicted)] = -1
     return result
 
 
@@ -24,10 +24,10 @@ def mean(y_predicted, y, derivative=False):
 
 def max_error(y_predicted, y, derivative=False):
     if derivative:
-        result = np.zeros(y.shape)
+        result = np.zeros(y_predicted.shape)
         indexes = np.where(
-            (np.max(np.abs(y - y_predicted), axis=1) == np.abs(y - y_predicted).T).T)
-        result[indexes] = 2*(y[indexes] > y_predicted[indexes])-1
+            (np.max(np.abs(y_predicted - y), axis=1) == np.abs(y_predicted - y).T).T)
+        result[indexes] = 2*(y_predicted[indexes] > y[indexes])-1
         return result
     else:
         return np.max(np.abs(y_predicted - y), axis=1).mean()
