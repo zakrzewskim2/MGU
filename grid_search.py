@@ -11,10 +11,12 @@ class GridSearch():
                 for key in param_values:
                     setattr(self.estimator, key, param_values[key])
                 
-                print(param_values)
                 self.estimator.fit(X, y)
                 score = self.estimator.score(X, y)
-                self.param_scores_[str(param_values)] = score
+                self.param_scores_.append({
+                    'params': param_values, 
+                    'score': score
+                })
             else:
                 dim_key = list(param_grid.keys())[dim]
                 dim_values = param_grid[dim_key]
@@ -22,12 +24,13 @@ class GridSearch():
                     param_values[dim_key] = value
                     iterate(param_grid, dim + 1, param_values)
         
-        self.param_scores_ = {}
+        self.param_scores_ = []
 
         iterate(self.param_grid, 0, {})
-        self.best_params_ = eval(max(self.param_scores_, \
-            key = self.param_scores_.get))
+        self.best_params_ = max(self.param_scores_, \
+            key = lambda p: p['score'])['params']
 
         for key in self.best_params_:
             setattr(self.estimator, key, self.best_params_[key])
+        self.estimator.fit(X, y)
         self.best_estimator_ = deepcopy(self.estimator)
