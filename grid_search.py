@@ -14,7 +14,7 @@ class GridSearch():
                 self.estimator.fit(X, y)
                 score = self.estimator.score(X, y)
                 self.param_scores_.append({
-                    'params': param_values, 
+                    'params': deepcopy(param_values), 
                     'score': score
                 })
             else:
