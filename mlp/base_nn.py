@@ -8,12 +8,17 @@ import random
 class BackpropagationNeuralNetwork():
     def __init__(self, config: Config):
         self.config: Config = config
-        self.num_iterations = self.config.num_iterations
-        self.alpha = self.config.eta
+        
+        self.hidden_layers = config.hidden_layers
+        self.bias = config.bias
+        self.batch_portion = config.batch_portion
+        self.moment = config.moment
+        self.num_iterations = config.num_iterations
+        self.eta = config.eta
 
-        self.error_function = self.config.error_function
-        self.activation = self.config.activation_function
-        self.out_activation = self.config.out_activation_function
+        self.error_function = config.error_function
+        self.activation = config.activation_function
+        self.out_activation = config.out_activation_function
 
     def fit(self, X, y, random_seed=12369666, serialize_path=None):
         if type(X) == pd.Series:
@@ -28,7 +33,7 @@ class BackpropagationNeuralNetwork():
         self.previous_weights_diff = self.__deep_zeros_like_copy()
         self.weight_history = [self.__current_weights_deep_copy()]
 
-        batch_size = int(self.config.batch_portion * self.N)
+        batch_size = int(self.batch_portion * self.N)
 
         for j in range(self.num_iterations):
             indices = random.sample(range(0, self.N), batch_size)
@@ -40,10 +45,10 @@ class BackpropagationNeuralNetwork():
             self.__adjust_weights()
 
             if j % 1000 == 0:
-                self.alpha *= 0.95
-                with np.printoptions(precision=3, suppress=True):
-                    print(f"Iter: {j}/{self.num_iterations} Error:",
-                      self.error_function(self.out_activation(self.outputs[-1]), batch_y))
+                self.eta *= 0.95
+                # with np.printoptions(precision=3, suppress=True):
+                #     print(f"Iter: {j}/{self.num_iterations} Error:",
+                #       self.error_function(self.out_activation(self.outputs[-1]), batch_y))
 
             self.weight_history.append(self.__current_weights_deep_copy())
 
@@ -108,7 +113,7 @@ class BackpropagationNeuralNetwork():
 
         # number of nodes in each layer
         self.layer_lengths = np.array([X.shape[1]] +
-                                      self.config.hidden_layers +
+                                      self.hidden_layers +
                                       [y.shape[1]])
         self.num_layers = len(self.layer_lengths)
 
@@ -121,14 +126,14 @@ class BackpropagationNeuralNetwork():
 
             # Initial weights from [-1,1], with first row as bias
             weights = 2 * np.random.random((nrows, ncols)) - 1
-            bias = 2 * np.random.random((1, ncols)) - 1 if self.config.bias \
+            bias = 2 * np.random.random((1, ncols)) - 1 if self.bias \
                     else np.zeros((1, ncols))
             weights = np.insert(weights, 0, bias, axis=0)
             self.weight_matrices.append(weights)
 
     def __append_bias_input_column(self, X):
         # X = [[2, 3], [4, 5]] -> X = [[1, 2, 3], [1, 4, 5]]
-        if self.config.bias:
+        if self.bias:
             return np.insert(X, 0, 1, axis=1)
         else:
             return np.insert(X, 0, 0, axis=1)
@@ -224,7 +229,7 @@ class BackpropagationNeuralNetwork():
     def __adjust_weights(self):
         # Adjusting weights
         for i in range(self.num_layers - 1):
-            delta_w = self.alpha * self.gradients[i] + \
-                self.config.moment * self.previous_weights_diff[i]
+            delta_w = self.eta * self.gradients[i] + \
+                self.moment * self.previous_weights_diff[i]
             self.weight_matrices[i] += -delta_w
             self.previous_weights_diff[i] = delta_w
