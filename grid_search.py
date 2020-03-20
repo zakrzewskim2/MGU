@@ -11,6 +11,7 @@ class GridSearch():
                 for key in param_values:
                     setattr(self.estimator, key, param_values[key])
                 
+                print(param_values)
                 self.estimator.fit(X, y)
                 score = self.estimator.score(X, y)
                 self.param_scores_[str(param_values)] = score
