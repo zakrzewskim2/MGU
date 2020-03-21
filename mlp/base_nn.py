@@ -17,7 +17,7 @@ class BackpropagationNeuralNetwork():
         self.eta = config.eta
 
         self.error_function = config.error_function
-        self.activation = config.activation_function
+        self.activation_function = config.activation_function
         self.out_activation = config.out_activation_function
 
     def fit(self, X, y, random_seed=12369666, serialize_path=None):
@@ -144,7 +144,7 @@ class BackpropagationNeuralNetwork():
     def __layer_output(self, inputs, weights, activate=True):
         base_output = np.dot(inputs, weights)
         if activate:
-            return self.__append_bias_input_column(self.activation(base_output))
+            return self.__append_bias_input_column(self.activation_function(base_output))
         else:
             return self.__append_bias_input_column(base_output)
 
@@ -207,7 +207,7 @@ class BackpropagationNeuralNetwork():
         for i in range(0, self.num_layers - 2):
             errors.append(
                 (np.dot(weights[-i-1][1:, :], errors[i].T)[None, :, :] *
-                 np.transpose(self.activation(
+                 np.transpose(self.activation_function(
                      not_activated_outputs[-i-2][:, 1:], True), (0, 2, 1))
                  ).sum(axis=1).T
             )

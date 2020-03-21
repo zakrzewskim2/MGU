@@ -5,14 +5,14 @@ class GridSearch():
         self.estimator = deepcopy(estimator)
         self.param_grid = param_grid
 
-    def fit(self, X, y):
+    def fit(self, X_train, y_train, X_test, y_test):
         def iterate(param_grid, dim, param_values):
             if dim == len(param_grid.keys()):
                 for key in param_values:
                     setattr(self.estimator, key, param_values[key])
                 
-                self.estimator.fit(X, y)
-                score = self.estimator.score(X, y)
+                self.estimator.fit(X_train, y_train)
+                score = self.estimator.score(X_test, y_test)
                 self.param_scores_.append({
                     'params': deepcopy(param_values), 
                     'score': score
@@ -32,5 +32,5 @@ class GridSearch():
 
         for key in self.best_params_:
             setattr(self.estimator, key, self.best_params_[key])
-        self.estimator.fit(X, y)
+        self.estimator.fit(X_train, y_train)
         self.best_estimator_ = deepcopy(self.estimator)

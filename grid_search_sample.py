@@ -27,7 +27,7 @@ train = pd.read_csv("data/regression/data.cube.train.100.csv")
 test = pd.read_csv("data/regression/data.cube.test.100.csv")
 X_train, y_train = train.iloc[:, :-1], train.y
 X_test, y_test = test.iloc[:, :-1], test.y
-gs.fit(X_train, y_train)
+gs.fit(X_train, y_train, X_test, y_test)
 
 #%%
 f= open("scores.txt","w+")
