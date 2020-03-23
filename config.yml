@@ -2,8 +2,8 @@
 #   last column of a dataset should be
 #     - labels in case of classification
 #     - predicted variable in case of regression
-train_set_path: data/projekt1_test/Classification/data.circles.train.100.csv # a valid path to train dataset
-test_set_path: data/projekt1_test/Classification/data.circles.test.100.csv # a valid path to test dataset
+train_set_path: data/classification/data.three_gauss.train.100.csv # a valid path to train dataset
+test_set_path: data/classification/data.three_gauss.test.100.csv # a valid path to test dataset
 
 ## Training variables
 problem_type: classification # valid values: classification, regression

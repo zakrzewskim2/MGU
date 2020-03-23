@@ -148,7 +148,7 @@ if config['problem_type'] == 'regression':
         random_seed = config['random_seed'], \
         activation_function = activation_function, \
         error_function = error_function)
-    estimator = clf.fit(X_train, y_train, \
+    estimator = estimator.fit(X_train, y_train, \
         serialize_path='training_data.joblib')
 
     print('Regression R^2 score:', estimator.score(X_test, y_test))
@@ -158,11 +158,11 @@ if config['problem_type'] == 'regression':
     print('Plotting test dataset...')
     vis.plot_regression_dataset(X_test.iloc[:, 0], y_test, show = True)
     print('Plotting classifier decision space for train data...')
-    vis.plot_regression_result(clf, X_train.iloc[:, 0], y_train, show = True)
+    vis.plot_regression_result(estimator, X_train.iloc[:, 0], y_train, show = True)
     print('Plotting classifier decision space for test data...')
-    vis.plot_regression_result(clf, X_test.iloc[:, 0], y_test, show = True)
+    vis.plot_regression_result(estimator, X_test.iloc[:, 0], y_test, show = True)
     print('Computing and plotting errors on train and test datasets for each iteration... (might take a while)')
-    vis.plot_train_test_error(clf, X_train, y_train, X_test, y_test, show = True)
+    vis.plot_train_test_error(estimator, X_train, y_train, X_test, y_test, show = True)
     print('Plotting edge weights during training...')
     vis.plot_training_history('training_data.joblib')
     print('Finished')
