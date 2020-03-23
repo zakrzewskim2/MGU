@@ -9,12 +9,28 @@ with open('config.yml', 'r') as f:
         print(exc)
         sys.exit()
 
+if 'train_set_path' not in config \
+        or 'test_set_path' not in config \
+        or 'problem_type' not in config \
+        or 'hidden_layers' not in config \
+        or 'activation_function' not in config \
+        or 'error_function' not in config \
+        or 'iterations' not in config \
+        or 'learning_rate' not in config \
+        or 'moment' not in config \
+        or 'random_seed' not in config \
+        or 'bias' not in config \
+        or 'batch_portion' not in config:
+    print('Missing key in configuration')
+    sys.exit()
+
 if type(config['train_set_path']) != str or not os.path.exists(config['train_set_path']):
     print('Invalid train_set_path')
     sys.exit()
 if type(config['test_set_path']) != str or not os.path.exists(config['test_set_path']):
     print('Invalid test_set_path')
     sys.exit()
+
 if config['problem_type'] not in ['classification', 'regression']:
     print('Invalid problem_type')
     sys.exit()
