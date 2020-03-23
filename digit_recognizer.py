@@ -53,7 +53,7 @@ result = pd.DataFrame({
     })\
     .reset_index(drop = False)\
     .rename(columns = { 'index': 'ImageId' })
-
+result['ImageId'] = result['ImageId'] + 1
 result.to_csv('kaggle_result.csv', index = False)
 
 # %%

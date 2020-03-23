@@ -49,35 +49,38 @@ def process_regression_dataset(name, estimator, draw = True, \
 # %% activation
 scores = []
 for i in range(10):
-    estimator = MLPRegressor(activation_function = \
-            activation_functions.sigmoid, \
-        error_function = error_functions.mean_squared, \
-        hidden_layers = [10], bias = True, batch_portion = 0.5, \
-        num_iterations = 5000, eta = 0.1, moment = 0, \
+    estimator = MLPRegressor(hidden_layers=[5],\
+        num_iterations=1000, eta=0.005, batch_portion=0.7, \
+        bias=False, moment=0.5, \
+        activation_function=activation_functions.sigmoid, \
+        error_function=error_functions.mean_squared,
         random_seed = 12369666 + i)
 
     score = process_regression_dataset('activation', estimator, \
-        datasets_path_format='data/regression/data.{}.{}.{}.csv')
+        datasets_path_format='data/regression/data.{}.{}.{}.csv', \
+        draw = True if i == 0 else False)
     
     scores.append(score)
-print(f'activation: mean - {round(np.mean(scores), 2)}, ' + \
-    f'std - {round(np.std(scores), 2)}')
+print(f'activation: mean - {round(np.mean(scores), 4)}, ' + \
+    f'std - {round(np.std(scores), 4)}')
+
 # %% cube
 scores = []
 for i in range(10):
     estimator = MLPRegressor(activation_function = \
             activation_functions.sigmoid, \
         error_function = error_functions.mean_squared, \
-        hidden_layers = [10, 10, 10], bias = True, batch_portion = 0.5, \
-        num_iterations = 20000, eta = 0.01, moment = 0, \
+        hidden_layers = [200], bias = True, batch_portion = 0.61, \
+        num_iterations = 2000, eta = 0.0405, moment = 0.4205, \
         random_seed = 12369666 + i)
 
     score = process_regression_dataset('cube', estimator, \
-        datasets_path_format='data/regression/data.{}.{}.{}.csv')
+        datasets_path_format='data/regression/data.{}.{}.{}.csv', \
+        draw = True if i == 0 else False)
     
     scores.append(score)
-print(f'cube: mean - {round(np.mean(scores), 2)}, ' + \
-    f'std - {round(np.std(scores), 2)}')
+print(f'cube: mean - {round(np.mean(scores), 4)}, ' + \
+    f'std - {round(np.std(scores), 4)}')
 
 # %% linear
 scores = []
@@ -91,11 +94,12 @@ for i in range(10):
 
     score = process_regression_dataset('linear', estimator, \
         datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
-        normalize=True)
+        normalize=True, \
+        draw = True if i == 0 else False)
     
     scores.append(score)
-print(f'linear: mean - {round(np.mean(scores), 2)}, ' + \
-    f'std - {round(np.std(scores), 2)}')
+print(f'linear: mean - {round(np.mean(scores), 4)}, ' + \
+    f'std - {round(np.std(scores), 4)}')
 
 # %% square
 scores = []
@@ -109,11 +113,12 @@ for i in range(10):
 
     score = process_regression_dataset('square', estimator, size=100, \
         datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
-        normalize=True)
+        normalize=True, \
+        draw = True if i == 0 else False)
     
     scores.append(score)
-print(f'square: mean - {round(np.mean(scores), 2)}, ' + \
-    f'std - {round(np.std(scores), 2)}')
+print(f'square: mean - {round(np.mean(scores), 4)}, ' + \
+    f'std - {round(np.std(scores), 4)}')
 
 # %% multimodal
 scores = []
@@ -127,10 +132,11 @@ for i in range(10):
 
     score = process_regression_dataset('multimodal', estimator, size=100, \
         datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
-        normalize=False)
+        normalize=False, \
+        draw = True if i == 0 else False)
     
     scores.append(score)
-print(f'multimodal: mean - {round(np.mean(scores), 2)}, ' + \
-    f'std - {round(np.std(scores), 2)}')
+print(f'multimodal: mean - {round(np.mean(scores), 4)}, ' + \
+    f'std - {round(np.std(scores), 4)}')
 
 # %%

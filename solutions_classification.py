@@ -47,8 +47,8 @@ for i in range(10):
     clf = MLPClassifier(activation_function = \
             activation_functions.tanh, \
         error_function = error_functions.cross_entropy, \
-        hidden_layers = [20, 20], bias = True, batch_portion = 0.7, \
-        num_iterations = 40000, eta = 0.1, moment = 0.2, \
+        hidden_layers = [10, 10, 10, 10], bias = True, batch_portion = 0.84, \
+        num_iterations = 5000, eta = 0.4155, moment = 0.5155, \
         random_seed = 12369666 + i)
 
     score = process_classification_dataset('circles', clf, \
