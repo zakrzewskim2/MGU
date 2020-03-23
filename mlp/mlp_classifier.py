@@ -54,6 +54,18 @@ class MLPClassifier(BackpropagationNeuralNetwork):
         predicted_y = self.predict(X)
         return np.mean(y == predicted_y)
 
+    def confusion_matrix(self, X, y):
+        X = self.__check_if_X_is_valid(X)
+        y = self.__check_if_y_is_valid(y)
+        predicted_y = self.predict(X)
+
+        size = self.max_class - self.min_class + 1
+        confusion_matrix = np.zeros((size, size), dtype=int)
+        np.add.at(confusion_matrix, \
+            [y - self.min_class, predicted_y - self.min_class], \
+            1)
+        return confusion_matrix
+
     def error_by_iteration(self, X, y):
         X = self.__check_if_X_is_valid(X)
         y = self.__check_if_y_is_valid(y)

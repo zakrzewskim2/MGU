@@ -3,11 +3,9 @@ import joblib
 import pandas as pd
 import numpy as np
 
-from mlp.mlp_regressor import MLPRegressor
-import mlp.activation_functions as activation_functions
-import mlp.error_functions as error_functions
+from mlp import MLPRegressor, activation_functions, \
+    error_functions, Visualizer
 
-from visualizer import Visualizer
 vis = Visualizer()
 
 def process_regression_dataset(name, estimator, \

@@ -1,4 +1,3 @@
-from enum import Enum
 import mlp.activation_functions as activation_functions
 import mlp.error_functions as error_functions
 
