@@ -22,7 +22,7 @@ def process_classification_dataset(name, clf, \
         X_test /= np.max(np.abs(X_test))/4
 
     clf.fit(X_train, y_train)
-    print(clf.score(X_test, y_test))
+    print('Accuracy:', clf.score(X_test, y_test))
 
     joblib.dump(clf, \
         f'results/classification/{name}-{size}-clf.joblib')
@@ -42,7 +42,8 @@ clf = MLPClassifier(activation_function = \
         activation_functions.tanh, \
     error_function = error_functions.cross_entropy, \
     hidden_layers = [20, 20], bias = True, batch_portion = 0.7, \
-    num_iterations = 40000, eta = 0.1, moment = 0.2)
+    num_iterations = 40000, eta = 0.1, moment = 0.2, \
+    random_seed = 12369666)
 
 process_classification_dataset('circles', clf)
 
@@ -51,7 +52,8 @@ clf = MLPClassifier(activation_function = \
         activation_functions.tanh, \
     error_function = error_functions.cross_entropy, \
     hidden_layers = [10, 10], bias = True, batch_portion = 0.7, \
-    num_iterations = 10000, eta = 0.1, moment = 0)
+    num_iterations = 10000, eta = 0.1, moment = 0, \
+    random_seed = 12369666)
 
 process_classification_dataset('XOR', clf)
 
@@ -60,7 +62,8 @@ clf = MLPClassifier(activation_function = \
         activation_functions.tanh, \
     error_function = error_functions.cross_entropy, \
     hidden_layers = [5,5,3], bias = True, batch_portion = 0.7, \
-    num_iterations = 10000, eta = 0.1, moment = 0)
+    num_iterations = 10000, eta = 0.1, moment = 0, \
+    random_seed = 12369666)
 
 process_classification_dataset('noisyXOR', clf)
 
@@ -69,7 +72,8 @@ clf = MLPClassifier(activation_function = \
         activation_functions.sigmoid, \
     error_function = error_functions.cross_entropy, \
     hidden_layers = [], bias = True, batch_portion = 0.5, \
-    num_iterations = 40000, eta = 0.1, moment = 0)
+    num_iterations = 40000, eta = 0.1, moment = 0, \
+    random_seed = 12369666)
 
 process_classification_dataset('simple', clf, size=100, \
     datasets_path_format='data/classification/data.{}.{}.{}.csv')
@@ -79,7 +83,8 @@ clf = MLPClassifier(activation_function = \
         activation_functions.sigmoid, \
     error_function = error_functions.cross_entropy, \
     hidden_layers = [5, 5, 3], bias = True, batch_portion = 0.5, \
-    num_iterations = 40000, eta = 0.1, moment = 0)
+    num_iterations = 40000, eta = 0.1, moment = 0, \
+    random_seed = 12369666)
 
 process_classification_dataset('three_gauss', clf, normalize=True, \
     datasets_path_format='data/classification/data.{}.{}.{}.csv')
@@ -89,7 +94,8 @@ clf = MLPClassifier(activation_function = \
         activation_functions.tanh, \
     error_function = error_functions.cross_entropy, \
     hidden_layers = [30, 30], bias = True, batch_portion = 0.7, \
-    num_iterations = 30000, eta = 0.2, moment = 0.2)
+    num_iterations = 30000, eta = 0.2, moment = 0.2, \
+    random_seed = 12369666)
 
 process_classification_dataset('windows', clf, normalize=True, \
     datasets_path_format='data/classification/data.{}.{}.{}.csv', \

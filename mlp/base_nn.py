@@ -6,7 +6,8 @@ import joblib
 import random
 
 class BackpropagationNeuralNetwork():
-    def __init__(self, config: Config):
+    def __init__(self, random_seed, config: Config):
+        self.random_seed = random_seed
         self.config: Config = config
         
         self.hidden_layers = config.hidden_layers
@@ -20,15 +21,16 @@ class BackpropagationNeuralNetwork():
         self.activation_function = config.activation_function
         self.out_activation = config.out_activation_function
 
-    def fit(self, X, y, random_seed=12369666, serialize_path=None):
+    def fit(self, X, y, serialize_path=None):
         if type(X) == pd.Series:
             X = X.values
         if type(y) == pd.Series:
             y = y.values
         
-        random.seed(random_seed)
+        if self.random_seed != None:
+            random.seed(self.random_seed)
         self.__initialize_structures(X, y)
-        self.__initialize_weights(random_seed)
+        self.__initialize_weights()
 
         self.previous_weights_diff = self.__deep_zeros_like_copy()
         self.weight_history = [self.__current_weights_deep_copy()]
@@ -117,8 +119,9 @@ class BackpropagationNeuralNetwork():
                                       [y.shape[1]])
         self.num_layers = len(self.layer_lengths)
 
-    def __initialize_weights(self, random_seed):
-        np.random.seed(random_seed)
+    def __initialize_weights(self):
+        if self.random_seed != None:
+            np.random.seed(self.random_seed)
         self.weight_matrices = []
         for i in range(0, self.num_layers - 1):
             nrows = self.layer_lengths[i]

@@ -11,7 +11,8 @@ class MLPClassifier(BackpropagationNeuralNetwork):
     def __init__(self, activation_function = activation_functions.tanh, \
             error_function = error_functions.cross_entropy, \
             hidden_layers = [20, 20], bias = True, batch_portion = 0.7, \
-            num_iterations = 40000, eta = 0.1, moment = 0):
+            num_iterations = 40000, eta = 0.1, moment = 0, \
+            random_seed=None):
         config = Config()
         config.out_activation_function = activation_functions.softmax
 
@@ -24,9 +25,9 @@ class MLPClassifier(BackpropagationNeuralNetwork):
         config.eta = eta
         config.moment = moment
 
-        super().__init__(config)
+        super().__init__(random_seed, config)
 
-    def fit(self, X, y, random_seed=12369666, serialize_path=None):
+    def fit(self, X, y, serialize_path=None):
         # X is 2D - np.ndarray / pd.DataFrame
         X = self.__check_if_X_is_valid(X)
 
@@ -38,7 +39,7 @@ class MLPClassifier(BackpropagationNeuralNetwork):
         encoded_y = self.__one_hot_encode(y, min_class=self.min_class, \
             max_class=self.max_class)
         
-        super().fit(X, encoded_y, random_seed=random_seed, serialize_path=serialize_path)
+        super().fit(X, encoded_y, serialize_path=serialize_path)
         return self
 
     def predict(self, X):

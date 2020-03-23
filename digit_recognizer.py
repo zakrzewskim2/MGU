@@ -25,20 +25,35 @@ clf = MLPClassifier(activation_function = activation_functions.sigmoid, \
     batch_portion = 0.5, \
     num_iterations = 10000, \
     eta = 0.15, \
-    moment = 0.7)
-clf = clf.fit(X_train, y_train)
+    moment = 0.7, \
+    random_seed = 12369666)
+clf = clf.fit(X_train, y_train, \
+    serialize_path = 'clf_digits.joblib')
+
+# %%
+print("Train accuracy:", clf.score(X_train, y_train))
+
+# %%
+print("Test accuracy:", clf.score(X_test, y_test))
+
+# %%
+print("Confusion matrix:")
+print(clf.confusion_matrix(X_test, y_test))
 
 # %%
 import joblib
-joblib.dump(clf, 'clf_digits.joblib')
+clf = joblib.load('clf_digits.joblib')
 
 # %%
-print("train", clf.score(X_train, y_train))
+X = pd.read_csv("data/digits/test.csv.zip")
+predicted_y = clf.predict(X)
 
-# %%
-print("test", clf.score(X_test, y_test))
+result = pd.DataFrame({
+        'Label': predicted_y
+    })\
+    .reset_index(drop = False)\
+    .rename(columns = { 'index': 'ImageId' })
 
-# %%
-clf.confusion_matrix(X_test, y_test)
+result.to_csv('kaggle_result.csv', index = False)
 
 # %%

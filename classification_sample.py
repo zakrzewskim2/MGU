@@ -9,13 +9,15 @@ X_test, y_test = test.iloc[:, :-1], test.cls
 # %%
 from mlp import MLPClassifier
 
-clf = MLPClassifier(num_iterations = 10000)
-clf.fit(X_train, y_train, \
+clf = MLPClassifier(num_iterations = 10000, \
+    random_seed = 12369666)
+print('Accuracy:', clf.fit(X_train, y_train, \
         serialize_path='training_data.joblib')\
-    .score(X_test, y_test)
+    .score(X_test, y_test))
 
 # %%
-clf.confusion_matrix(X_test, y_test)
+print('Class confusion matrix:')
+print(clf.confusion_matrix(X_test, y_test))
 
 # %%
 from mlp import Visualizer
@@ -26,14 +28,16 @@ vis.plot_train_test_error(clf, X_train, y_train, \
 # %%
 from mlp import MLPClassifier, activation_functions
 
-clf = MLPClassifier(activation_function = activation_functions.sigmoid)
+clf = MLPClassifier(activation_function = activation_functions.sigmoid, \
+    random_seed = 12369666)
 clf.fit(X_train, y_train).score(X_test, y_test)
 
 # %%
 from mlp import MLPClassifier, activation_functions, \
     error_functions
 
-clf = MLPClassifier(error_function = error_functions.mean_squared)
+clf = MLPClassifier(error_function = error_functions.mean_squared, \
+    random_seed = 12369666)
 clf.fit(X_train, y_train).score(X_test, y_test)
 
 # %%

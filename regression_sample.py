@@ -1,8 +1,8 @@
 # %%
 import pandas as pd
 import numpy as np
-train = pd.read_csv("data/regression/data.cube.train.100.csv")
-test = pd.read_csv("data/regression/data.cube.test.100.csv")
+train = pd.read_csv("data/regression/data.activation.train.100.csv")
+test = pd.read_csv("data/regression/data.activation.test.100.csv")
 
 X_train, y_train = train.iloc[:, :-1], train.y
 X_test, y_test = test.iloc[:, :-1], test.y
@@ -10,8 +10,9 @@ X_test, y_test = test.iloc[:, :-1], test.y
 # %%
 from mlp import MLPRegressor
 
-estimator = MLPRegressor()
-estimator.fit(X_train, y_train).score(X_test, y_test)
+estimator = MLPRegressor(random_seed = 12369666, \
+    num_iterations = 10000)
+print('R^2 score:', estimator.fit(X_train, y_train).score(X_test, y_test))
 
 # %%
 from mlp import Visualizer

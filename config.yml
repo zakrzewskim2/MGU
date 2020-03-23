@@ -1,0 +1,18 @@
+## Dataset definitions:
+#   last column of a dataset should be
+#     - labels in case of classification
+#     - predicted variable in case of regression
+train_set_path: data/projekt1_test/Classification/data.circles.train.100.csv # a valid path to train dataset
+test_set_path: data/projekt1_test/Classification/data.circles.test.100.csv # a valid path to test dataset
+
+## Training variables
+problem_type: classification # valid values: classification, regression
+hidden_layers: [5, 5] # a list of integers (layer sizes), can be empty
+activation_function: sigmoid # valid values: sigmoid, softmax, tanh, linear
+error_function: mean_squared # valid values: mean_squared, mean, max, cross_entropy
+iterations: 10000 # a positive integer
+learning_rate: 0.1 # a positive number
+moment: 0 # a non-negative number
+random_seed: ~ # null or an integer
+bias: true # a boolean
+batch_portion: 0.5 # a number in [0, 1] range

@@ -22,7 +22,7 @@ def process_regression_dataset(name, estimator, \
     X_test, y_test = test.iloc[:, :-1], test.y
 
     estimator.fit(X_train, y_train)
-    print(estimator.score(X_test, y_test))
+    print('R^2 score:', estimator.score(X_test, y_test))
 
     joblib.dump(estimator, \
         f'results/regression/{name}-{size}-clf.joblib')
@@ -37,17 +37,18 @@ def process_regression_dataset(name, estimator, \
         X_train.x, y_train, \
         show = True, \
         save_path = f'results/regression/{name}-{size}-result-train.png')
-    # vis.plot_train_test_error(estimator, \
-    #     X_train, y_train, X_test, y_test, \
-    #     show = True, \
-    #     save_path = f'results/regression/{name}-{size}-error.png')
+    vis.plot_train_test_error(estimator, \
+        X_train, y_train, X_test, y_test, \
+        show = True, \
+        save_path = f'results/regression/{name}-{size}-error.png')
 
 # %% activation
 estimator = MLPRegressor(activation_function = \
         activation_functions.sigmoid, \
     error_function = error_functions.mean_squared, \
     hidden_layers = [10], bias = True, batch_portion = 0.5, \
-    num_iterations = 5000, eta = 0.1, moment = 0)
+    num_iterations = 5000, eta = 0.1, moment = 0, \
+    random_seed = 12369666)
 
 process_regression_dataset('activation', estimator, \
     datasets_path_format='data/regression/data.{}.{}.{}.csv')
@@ -57,7 +58,8 @@ estimator = MLPRegressor(activation_function = \
         activation_functions.sigmoid, \
     error_function = error_functions.mean_squared, \
     hidden_layers = [10, 10, 10], bias = True, batch_portion = 0.5, \
-    num_iterations = 20000, eta = 0.01, moment = 0)
+    num_iterations = 20000, eta = 0.01, moment = 0, \
+    random_seed = 12369666)
 
 process_regression_dataset('cube', estimator, \
     datasets_path_format='data/regression/data.{}.{}.{}.csv')
@@ -67,7 +69,8 @@ estimator = MLPRegressor(activation_function = \
         activation_functions.tanh, \
     error_function = error_functions.mean_squared, \
     hidden_layers = [], bias = True, batch_portion = 0.8, \
-    num_iterations = 1000, eta = 0.4, moment = 0)
+    num_iterations = 1000, eta = 0.4, moment = 0, \
+    random_seed = 12369666)
 
 process_regression_dataset('linear', estimator, \
     datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
@@ -78,7 +81,8 @@ estimator = MLPRegressor(activation_function = \
         activation_functions.tanh, \
     error_function = error_functions.mean_squared, \
     hidden_layers = [8, 8, 8], bias = True, batch_portion = 0.8, \
-    num_iterations = 10000, eta = 0.4, moment = 0)
+    num_iterations = 10000, eta = 0.4, moment = 0, \
+    random_seed = 12369666)
 
 process_regression_dataset('square', estimator, size=100, \
     datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \
@@ -89,7 +93,8 @@ estimator = MLPRegressor(activation_function = \
         activation_functions.tanh, \
     error_function = error_functions.mean_squared, \
     hidden_layers = [20, 20, 20], bias = True, batch_portion = 0.8, \
-    num_iterations = 100000, eta = 0.0002, moment = 0.1)
+    num_iterations = 100000, eta = 0.0002, moment = 0.1, \
+    random_seed = 12369666)
 
 process_regression_dataset('multimodal', estimator, size=100, \
     datasets_path_format='data/projekt1_test/Regression/data.{}.{}.{}.csv', \

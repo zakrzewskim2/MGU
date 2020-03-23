@@ -12,7 +12,8 @@ class MLPRegressor(BackpropagationNeuralNetwork):
     def __init__(self, activation_function = activation_functions.tanh, \
             error_function = error_functions.mean_squared, \
             hidden_layers = [2], bias = False, batch_portion = 0.8, \
-            num_iterations = 100000, eta = 0.1, moment = 0):
+            num_iterations = 100000, eta = 0.1, moment = 0, \
+            random_seed = None):
         config = Config()
         config.out_activation_function = activation_functions.linear
 
@@ -25,9 +26,9 @@ class MLPRegressor(BackpropagationNeuralNetwork):
         config.eta = eta
         config.moment = moment
 
-        super().__init__(config)
+        super().__init__(random_seed, config)
 
-    def fit(self, X, y, random_seed=12369666, serialize_path=None):
+    def fit(self, X, y, serialize_path=None):
         # X is 2D - np.ndarray / pd.DataFrame
         X = self.__check_if_X_is_valid(X)
 
@@ -35,7 +36,7 @@ class MLPRegressor(BackpropagationNeuralNetwork):
         y = self.__check_if_y_is_valid(y)
 
         y = y.reshape(-1, 1)
-        super().fit(X, y, random_seed=random_seed, serialize_path=serialize_path)
+        super().fit(X, y, serialize_path=serialize_path)
         return self
 
     def predict(self, X):

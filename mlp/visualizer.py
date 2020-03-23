@@ -12,7 +12,7 @@ class Visualizer():
         weight_history = training_info['weight_history']
         layer_lengths = training_info['layer_lengths']
         num_layers = len(layer_lengths)
-        config = training_info['config']
+        bias = training_info['config'].bias
 
         G = nx.Graph()
 
@@ -37,7 +37,7 @@ class Visualizer():
 
             # Init visualization edges
             for i in range(num_layers - 1):
-                if config.bias:
+                if bias:
                     # Bias edges
                     for in_node in range(layer_lengths[i + 1]):
                         G.add_edge(0, vis_mappings[i + 1][in_node],
@@ -59,9 +59,9 @@ class Visualizer():
             colors = []
             weights = nx.get_edge_attributes(G, 'weight')
             for node in G.nodes():
-                if node > layer_lengths[0]:
+                if bias and node > layer_lengths[0]:
                     colors.append(weights[(node, 0)])
-                elif node == 0:
+                elif bias and node == 0:
                     # Skip temporary bias
                     continue
                 else:
