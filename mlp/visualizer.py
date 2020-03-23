@@ -6,7 +6,8 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 class Visualizer():
-    def plot_training_history(self, filename = 'training_data.joblib'):
+    def plot_training_history(self, filename = 'training_data.joblib', \
+            plot_iteration_interval = 100):
         training_info = joblib.load(filename)
 
         weight_history = training_info['weight_history']
@@ -87,8 +88,6 @@ class Visualizer():
 
             plt.pause(0.01)
 
-        plot_iteration_interval = 100
-
         i = 0
         draw_graph(G, weight_history[0], with_colorbar=True)
         for weight_matrices in weight_history[1:]:
@@ -99,7 +98,7 @@ class Visualizer():
         plt.show()
 
     def plot_classification_dataset(self, x, y, classes, \
-            show = False, save_path = None):
+            show = True, save_path = None):
         plt.scatter(x, y, c = classes)
         if type(save_path) is str:
             plt.savefig(save_path, dpi = 300)
@@ -107,7 +106,7 @@ class Visualizer():
             plt.show()
 
     def plot_regression_dataset(self, x, y, \
-            show = False, save_path = None):
+            show = True, save_path = None):
         plt.scatter(x, y)
         if type(save_path) is str:
             plt.savefig(save_path, dpi = 300)
@@ -116,7 +115,7 @@ class Visualizer():
 
     def plot_classification_result(self, clf, x, y, real_class, \
             margin = 1, grid_size = 40, \
-            show = False, save_path = None):
+            show = True, save_path = None):
         x_min, x_max = np.min(x) - margin, np.max(x) + margin
         y_min, y_max = np.min(y) - margin, np.max(y) + margin
         xx, yy = np.meshgrid(np.linspace(x_min, x_max, grid_size),
@@ -133,7 +132,7 @@ class Visualizer():
             plt.show()
 
     def plot_regression_result(self, estimator, x, y, \
-            show = False, save_path = None):
+            show = True, save_path = None):
         x_min, x_max = np.min(x) - 1, np.max(x) + 1
         xx = np.arange(x_min, x_max, 0.1)
 
@@ -149,7 +148,7 @@ class Visualizer():
 
     def plot_train_test_error(self, estimator, \
             X_train, y_train, X_test, y_test, log_scale = True, \
-            show = False, save_path = None):
+            show = True, save_path = None):
         train_errors = estimator.error_by_iteration(X_train, y_train)
         test_errors = estimator.error_by_iteration(X_test, y_test)
 
