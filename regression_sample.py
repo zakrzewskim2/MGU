@@ -17,21 +17,21 @@ estimator.fit(X_train, y_train).score(X_test, y_test)
 from mlp import Visualizer
 vis = Visualizer()
 vis.plot_train_test_error(estimator, X_train, y_train, \
-    X_test, y_test, log_scale=True)
+    X_test, y_test, log_scale=True, show = True)
 
 # %%
 from mlp import Visualizer
 vis = Visualizer()
-vis.plot_regression_result(estimator, X_test.x, y_test)
+vis.plot_regression_result(estimator, X_test.x, y_test, show = True)
 
 # %%
 from mlp import Visualizer
 vis = Visualizer()
-vis.plot_regression_dataset(X_train, y_train)
+vis.plot_regression_dataset(X_train, y_train, show = True)
 
 # %%
 from mlp import Visualizer
 vis = Visualizer()
-vis.plot_regression_dataset(X_test, y_test)
+vis.plot_regression_dataset(X_test, y_test, show = True)
 
 # %%
