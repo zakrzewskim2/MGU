@@ -8,7 +8,7 @@ from mlp import MLPClassifier, activation_functions, \
 
 vis = Visualizer()
 
-def process_classification_dataset(name, clf, \
+def process_classification_dataset(name, clf, draw = True, \
         normalize=False, size = 100, plot_margin = 1, plot_size = 40, \
         datasets_path_format = "data/projekt1_test/Classification/data.{}.{}.{}.csv"):
     train = pd.read_csv(datasets_path_format.format(name, 'train', size))
@@ -22,83 +22,129 @@ def process_classification_dataset(name, clf, \
         X_test /= np.max(np.abs(X_test))/4
 
     clf.fit(X_train, y_train)
-    print('Accuracy:', clf.score(X_test, y_test))
+    score = clf.score(X_test, y_test)
+    print('Accuracy:', score)
 
-    joblib.dump(clf, \
-        f'results/classification/{name}-{size}-clf.joblib')
-    vis.plot_classification_dataset(X_train.x, X_train.y, \
-        y_train, show = True, \
-        save_path = f'results/classification/{name}-{size}-train.png')
-    vis.plot_classification_result(clf, \
-        X_test.x, X_test.y, y_test, show = True, \
-        save_path = f'results/classification/{name}-{size}-result.png', \
-        margin = plot_margin, grid_size = plot_size)
-    vis.plot_train_test_error(clf, \
-        X_train, y_train, X_test, y_test, \
-        save_path = f'results/classification/{name}-{size}-error.png')
+    if draw:
+        joblib.dump(clf, \
+            f'results/classification/{name}-{size}-clf.joblib')
+        vis.plot_classification_dataset(X_train.x, X_train.y, \
+            y_train, show = True, \
+            save_path = f'results/classification/{name}-{size}-train.png')
+        vis.plot_classification_result(clf, \
+            X_test.x, X_test.y, y_test, show = True, \
+            save_path = f'results/classification/{name}-{size}-result.png', \
+            margin = plot_margin, grid_size = plot_size)
+        vis.plot_train_test_error(clf, \
+            X_train, y_train, X_test, y_test, \
+            save_path = f'results/classification/{name}-{size}-error.png')
+
+    return score
 
 # %% circles
-clf = MLPClassifier(activation_function = \
-        activation_functions.tanh, \
-    error_function = error_functions.cross_entropy, \
-    hidden_layers = [20, 20], bias = True, batch_portion = 0.7, \
-    num_iterations = 40000, eta = 0.1, moment = 0.2, \
-    random_seed = 12369666)
+scores = []
+for i in range(10):
+    clf = MLPClassifier(activation_function = \
+            activation_functions.tanh, \
+        error_function = error_functions.cross_entropy, \
+        hidden_layers = [20, 20], bias = True, batch_portion = 0.7, \
+        num_iterations = 40000, eta = 0.1, moment = 0.2, \
+        random_seed = 12369666 + i)
 
-process_classification_dataset('circles', clf)
+    score = process_classification_dataset('circles', clf, \
+        draw = True if i == 0 else False)
+    
+    scores.append(100 * score)
+print(f'circles: mean - {round(np.mean(scores), 2)}, ' + \
+    f'std - {round(np.std(scores), 2)}')
 
 # %% XOR
-clf = MLPClassifier(activation_function = \
-        activation_functions.tanh, \
-    error_function = error_functions.cross_entropy, \
-    hidden_layers = [10, 10], bias = True, batch_portion = 0.7, \
-    num_iterations = 10000, eta = 0.1, moment = 0, \
-    random_seed = 12369666)
+scores = []
+for i in range(10):
+    clf = MLPClassifier(activation_function = \
+            activation_functions.tanh, \
+        error_function = error_functions.cross_entropy, \
+        hidden_layers = [10, 10], bias = True, batch_portion = 0.7, \
+        num_iterations = 10000, eta = 0.1, moment = 0, \
+        random_seed = 12369666 + i)
 
-process_classification_dataset('XOR', clf)
+    score = process_classification_dataset('XOR', clf, \
+        draw = True if i == 0 else False)
+    
+    scores.append(100 * score)
+print(f'XOR: mean - {round(np.mean(scores), 2)}, ' + \
+    f'std - {round(np.std(scores), 2)}')
 
 # %% noisyXOR
-clf = MLPClassifier(activation_function = \
-        activation_functions.tanh, \
-    error_function = error_functions.cross_entropy, \
-    hidden_layers = [5,5,3], bias = True, batch_portion = 0.7, \
-    num_iterations = 10000, eta = 0.1, moment = 0, \
-    random_seed = 12369666)
+scores = []
+for i in range(10):
+    clf = MLPClassifier(activation_function = \
+            activation_functions.tanh, \
+        error_function = error_functions.cross_entropy, \
+        hidden_layers = [5,5,3], bias = True, batch_portion = 0.7, \
+        num_iterations = 10000, eta = 0.1, moment = 0, \
+        random_seed = 12369666 + i)
 
-process_classification_dataset('noisyXOR', clf)
+    score = process_classification_dataset('noisyXOR', clf, \
+            draw = True if i == 0 else False)
+    
+    scores.append(100 * score)
+print(f'noisyXOR: mean - {round(np.mean(scores), 2)}, ' + \
+    f'std - {round(np.std(scores), 2)}')
 
 # %% simple
-clf = MLPClassifier(activation_function = \
-        activation_functions.sigmoid, \
-    error_function = error_functions.cross_entropy, \
-    hidden_layers = [], bias = True, batch_portion = 0.5, \
-    num_iterations = 40000, eta = 0.1, moment = 0, \
-    random_seed = 12369666)
+scores = []
+for i in range(10):
+    clf = MLPClassifier(activation_function = \
+            activation_functions.sigmoid, \
+        error_function = error_functions.cross_entropy, \
+        hidden_layers = [], bias = True, batch_portion = 0.5, \
+        num_iterations = 40000, eta = 0.1, moment = 0, \
+        random_seed = 12369666 + i)
 
-process_classification_dataset('simple', clf, size=100, \
-    datasets_path_format='data/classification/data.{}.{}.{}.csv')
+    score = process_classification_dataset('simple', clf, size=100, \
+        datasets_path_format='data/classification/data.{}.{}.{}.csv', \
+        draw = True if i == 0 else False)
+    
+    scores.append(100 * score)
+print(f'simple: mean - {round(np.mean(scores), 2)}, ' + \
+    f'std - {round(np.std(scores), 2)}')
 
 # %% three_gauss
-clf = MLPClassifier(activation_function = \
-        activation_functions.sigmoid, \
-    error_function = error_functions.cross_entropy, \
-    hidden_layers = [5, 5, 3], bias = True, batch_portion = 0.5, \
-    num_iterations = 40000, eta = 0.1, moment = 0, \
-    random_seed = 12369666)
+scores = []
+for i in range(10):
+    clf = MLPClassifier(activation_function = \
+            activation_functions.sigmoid, \
+        error_function = error_functions.cross_entropy, \
+        hidden_layers = [5, 5, 3], bias = True, batch_portion = 0.5, \
+        num_iterations = 40000, eta = 0.1, moment = 0, \
+        random_seed = 12369666 + i)
 
-process_classification_dataset('three_gauss', clf, normalize=True, \
-    datasets_path_format='data/classification/data.{}.{}.{}.csv')
+    score = process_classification_dataset('three_gauss', clf, normalize=True, \
+        datasets_path_format='data/classification/data.{}.{}.{}.csv', \
+        draw = True if i == 0 else False)
+    
+    scores.append(100 * score)
+print(f'three_gauss: mean - {round(np.mean(scores), 2)}, ' + \
+    f'std - {round(np.std(scores), 2)}')
 
 # %% windows
-clf = MLPClassifier(activation_function = \
-        activation_functions.tanh, \
-    error_function = error_functions.cross_entropy, \
-    hidden_layers = [30, 30], bias = True, batch_portion = 0.7, \
-    num_iterations = 30000, eta = 0.2, moment = 0.2, \
-    random_seed = 12369666)
+scores = []
+for i in range(10):
+    clf = MLPClassifier(activation_function = \
+            activation_functions.tanh, \
+        error_function = error_functions.cross_entropy, \
+        hidden_layers = [30, 30], bias = True, batch_portion = 0.7, \
+        num_iterations = 30000, eta = 0.2, moment = 0.2, \
+        random_seed = 12369666 + i)
 
-process_classification_dataset('windows', clf, normalize=True, \
-    datasets_path_format='data/classification/data.{}.{}.{}.csv', \
-    plot_margin=0.25, plot_size=100)
+    score = process_classification_dataset('windows', clf, normalize=True, \
+        datasets_path_format='data/classification/data.{}.{}.{}.csv', \
+        plot_margin=0.25, plot_size=100, \
+        draw = True if i == 0 else False)
+    
+    scores.append(100 * score)
+print(f'windows: mean - {round(np.mean(scores), 2)}, ' + \
+    f'std - {round(np.std(scores), 2)}')
 
 # %%
