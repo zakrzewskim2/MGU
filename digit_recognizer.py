@@ -18,17 +18,16 @@ X_test /= 255
 from mlp import MLPClassifier, activation_functions, \
     error_functions
 
-clf = MLPClassifier(activation_function = activation_functions.sigmoid, \
-    error_function = error_functions.cross_entropy, \
-    hidden_layers = [49, 28, 16],
-    bias = True, \
-    batch_portion = 0.5, \
-    num_iterations = 10000, \
-    eta = 0.15, \
-    moment = 0.7, \
+
+clf = MLPClassifier(num_iterations=7200, eta=0.3805, \
+    batch_portion=0.3, bias=True, hidden_layers=[196, 196],\
+    activation_function=activation_functions.sigmoid, \
+    error_function=error_functions.cross_entropy, \
+    moment=0.7605, \
     random_seed = 12369666)
 clf = clf.fit(X_train, y_train)
 
+# %%
 import joblib
 joblib.dump(clf, 'clf_digits.joblib')
 
@@ -47,6 +46,7 @@ import joblib
 clf = joblib.load('clf_digits.joblib')
 
 # %%
+import pandas as pd
 X = pd.read_csv("data/digits/test.csv.zip")
 predicted_y = clf.predict(X)
 
