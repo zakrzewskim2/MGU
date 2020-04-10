@@ -6,7 +6,7 @@ import random as rand
 train = pd.read_csv("data/digits/train.csv.zip")
 test = pd.read_csv("data/digits/test.csv.zip")
 indices = np.random.permutation(train.shape[0])
-train_indices, test_indices = indices[:10000], indices[10000:]
+train_indices, test_indices = indices[:5000], indices[5000:]
 
 X_train, y_train = train.iloc[train_indices, 1:], train.iloc[train_indices, 0]
 X_test, y_test = train.iloc[test_indices, 1:], train.iloc[test_indices, 0]
@@ -19,11 +19,11 @@ from mlp import MLPClassifier, activation_functions, \
     error_functions
 
 
-clf = MLPClassifier(num_iterations=7200, eta=0.3805, \
-    batch_portion=0.3, bias=True, hidden_layers=[196, 196],\
-    activation_function=activation_functions.sigmoid, \
+clf = MLPClassifier(num_iterations=7200, eta=0.05, \
+    batch_portion=0.3, bias=True, hidden_layers=[98, 98],\
+    activation_function=activation_functions.leaky_relu, \
     error_function=error_functions.cross_entropy, \
-    moment=0.7605, \
+    moment=0.5, \
     random_seed = 12369666)
 clf = clf.fit(X_train, y_train)
 

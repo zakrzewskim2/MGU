@@ -45,9 +45,10 @@ class BackpropagationNeuralNetwork():
             self.__calculate_errors(batch_X, batch_y)
             self.__calculate_gradients()
             self.__adjust_weights()
-
+            
             if j % 1000 == 0:
                 self.eta *= 0.95
+            if j % 100 == 0:
                 with np.printoptions(precision=3, suppress=True):
                     print(f"Iter: {j}/{self.num_iterations} Error:",
                       self.error_function(self.out_activation(self.outputs[-1]), batch_y))
