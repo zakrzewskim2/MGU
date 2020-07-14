@@ -49,3 +49,17 @@ def linear(x, derivative=False):
     else:
         base_derivative = 1
         return __to_3d_derivative(x, base_derivative)
+
+def leaky_relu(x, derivative=False):
+    if not derivative:
+        return np.maximum(0.1*x, x)
+    else:
+        base_derivative = np.where(x<0, 0.1, 1)
+        return __to_3d_derivative(x, base_derivative)
+
+def relu(x, derivative=False):
+    if not derivative:
+        return np.maximum(np.zeros_like(x), x)
+    else:
+        base_derivative = np.where(x<0, 0, 1)
+        return __to_3d_derivative(x, base_derivative)
